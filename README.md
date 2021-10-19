@@ -3,7 +3,7 @@
 ## Task
 
 - [ ] Website design / User flow
-- [ ] Database Modelling
+- [x] Database Modelling
 - [ ] API
 - [ ] Front-end
 - [ ] Testing / Launching
@@ -16,11 +16,15 @@
 - PostCSS: Optimize CSS (for Tailwind)
 
 - useSWR: Cached data-fetching
-- XState (nyoba): State machine / state management
-- Recoil (nyoba): State management if XState fails
+- XState: State machine / state management
+- Recoil: State management if XState fails
 - Zustand: State management if XState and Recoil fails
+- Redux: State management if XState, Recoil and Zustand fails
 
 - Next.JS: Client / Server / Routing
+- NextAuth: Authentication
+- Auth0: Authentication if NextAuth fails
+- Clerk: Authentication if NextAuth and Auth0 fails
 - Prisma: Database ORM
 - Postgres: SQL Database
 - MSSQL: fallback if not allowed to use Postgres

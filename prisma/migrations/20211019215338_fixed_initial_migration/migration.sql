@@ -12,13 +12,14 @@ CREATE TABLE "Post" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
-    "birthdate" TIMESTAMP(3) NOT NULL,
-    "gender" TEXT NOT NULL,
+    "name" TEXT,
+    "username" TEXT,
+    "birthdate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "gender" TEXT NOT NULL DEFAULT E'Male',
     "email" TEXT,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
-    "university" TEXT NOT NULL,
+    "university" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

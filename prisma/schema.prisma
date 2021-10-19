@@ -29,9 +29,10 @@ model Post {
 
 model User {
   id        String   @id @unique @default(uuid())
-  username  String   @unique
-  birthdate DateTime
-  gender    String
+  name      String?
+  username  String?  @unique
+  birthdate DateTime @default(now())
+  gender    String   @default("Male")
 
   // NextAuth
   email         String?   @unique
@@ -41,7 +42,7 @@ model User {
   sessions      Session[]
 
   // TODO: Change to enum
-  university String
+  university String?
 
   posts         Post[] @relation("postAuthor")
   postUpvotes   Post[] @relation("upvote")

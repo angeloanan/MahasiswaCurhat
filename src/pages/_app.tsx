@@ -1,4 +1,4 @@
-import '@fontsource/inter'
+import '@fontsource/inter/variable.css'
 import 'tailwindcss/tailwind.css'
 import './styles.css'
 

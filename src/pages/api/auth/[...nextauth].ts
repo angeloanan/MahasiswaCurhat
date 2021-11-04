@@ -12,8 +12,8 @@ export default NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
-      clientId: process.env.NEXTAUTH_GOOGLE_CLIENT_ID,
-      clientSecret: process.env.NEXTAUTH_GOOGLE_CLIENT_SECRET,
+      clientId: process.env.NEXTAUTH_GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.NEXTAUTH_GOOGLE_CLIENT_SECRET!,
     }),
     // EmailProvider({
     //   // ...

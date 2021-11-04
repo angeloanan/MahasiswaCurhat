@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 
 // https://github.com/prisma/prisma/issues/1983#issuecomment-620621213
 
-let prisma
+let prisma: PrismaClient
 
 if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient()

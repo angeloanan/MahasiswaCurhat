@@ -20,7 +20,7 @@ const HomePage = () => {
         <a className='p-4 m-2 text-blue-600 bg-yellow-400'>Sign in</a>
       </NextLink>
       <NextLink href='/api/auth/signout' passHref>
-        <a className='p-4 m-2 text-red-600 bg-yellow-400'>Sign out</a>
+        <a className='p-4 m-2 text-red-600 bg-yellow-400 '>Sign out</a>
       </NextLink>
     </>
   )

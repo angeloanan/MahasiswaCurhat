@@ -10,10 +10,14 @@
 
 ## Tech stack
 
+https://jamstack.org
+
 - TypeScript: Typed Javascript
 - React: UI
 - Tailwind CSS: Styling; utility classes
 - PostCSS: Optimize CSS (for Tailwind)
+- Headless UI: Unstyled Tailwind UI Component
+- FeatherIcons: Icon set
 
 - useSWR: Cached data-fetching
 - XState: State machine / state management

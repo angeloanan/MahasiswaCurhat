@@ -2,11 +2,12 @@ import '@fontsource/inter/variable.css'
 import 'tailwindcss/tailwind.css'
 import './styles.css'
 
-import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
 import type { Session } from 'next-auth'
-import Navbar from '../components/Navbar'
 import { NextPage } from 'next'
+import Head from 'next/head'
+import { SessionProvider } from 'next-auth/react'
+import Navbar from '../components/Navbar'
 
 type NextPageWithDisableLayout = NextPage & {
   disableLayout?: boolean
@@ -26,6 +27,12 @@ function CustomApp({ Component, pageProps: { session, ...pageProps } }: CustomAp
         <Component {...pageProps} />
       ) : (
         <>
+          <Head>
+            <meta
+              name='google-site-verification'
+              content='6hRj86Hx02xLCsII57JKBQfSui5rHpi9mpF_8DLhDm4'
+            />
+          </Head>
           <Navbar />
 
           <main className='flex flex-col content-center justify-center w-full pt-4 mx-auto'>

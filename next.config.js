@@ -13,6 +13,9 @@ const nextConfig = {
       },
     ]
   },
+  images: {
+    domains: ['lh3.googleusercontent.com', 'c.tenor.com'],
+  },
 }
 
 module.exports = nextConfig

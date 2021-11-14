@@ -28,7 +28,7 @@ function CustomApp({ Component, pageProps: { session, ...pageProps } }: CustomAp
         <>
           <Navbar />
 
-          <main className='flex flex-col content-center justify-center w-full pt-4 mx-auto max-w-prose'>
+          <main className='flex flex-col content-center justify-center w-full pt-4 mx-auto'>
             <Component {...pageProps} />
           </main>
         </>

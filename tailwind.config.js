@@ -1,5 +1,4 @@
 module.exports = {
-  mode: 'jit',
   purge: ['./src/pages/**/*.{js,jsx,ts,tsx}', './src/components/**/*.{js,jsx,ts,tsx}'],
   darkMode: 'media',
   theme: {
@@ -14,7 +13,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/typography'),
-    // require('@tailwindcss/forms'),
+    require('@tailwindcss/forms'),
     require('@tailwindcss/line-clamp'),
     require('@tailwindcss/aspect-ratio'),
   ],

@@ -7,7 +7,8 @@ const HomePage = () => {
   const { data, status } = useSession()
 
   return (
-    <div className='max-w-prose'>
+    <>
+      <div className='text-2xl font-bold'>Mahasiswa curhat</div>
       <div>Your authentication status: {status}</div>
 
       <div className='p-4'>
@@ -21,7 +22,7 @@ const HomePage = () => {
       <NextLink href='/api/auth/signout' passHref>
         <a className='p-4 m-2 text-red-600 bg-yellow-400 '>Sign out</a>
       </NextLink>
-    </div>
+    </>
   )
 }
 

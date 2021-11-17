@@ -1,19 +1,15 @@
 import { PrismaClient } from '@prisma/client'
 
-// https://github.com/prisma/prisma/issues/1983#issuecomment-620621213
+// https://www.prisma.io/docs/support/help-articles/nextjs-prisma-client-dev-practices
 
-let prisma: PrismaClient
-
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient()
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient({
-      log: ['error', 'info', 'query', 'warn'],
-    })
-  }
-
-  prisma = global.prisma
+declare global {
+  var prisma: PrismaClient | undefined
 }
 
-export default prisma
+export const prisma =
+  global.prisma ||
+  new PrismaClient({
+    log: ['error', 'info', 'query', 'warn'],
+  })
+
+if (process.env.NODE_ENV !== 'production') global.prisma = prisma

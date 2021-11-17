@@ -1,14 +1,11 @@
 {
   "private": "true",
-  "engines": {
-    "node": "14.x"
-  },
   "dependencies": {
-    "@fontsource/inter": "^4.5.0",
+    "@fontsource/inter": "^4.5.1",
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
     "@next-auth/prisma-adapter": "next",
-    "@prisma/client": "3.4.2",
+    "@prisma/client": "3.5.0",
     "@tailwindcss/aspect-ratio": "^0.3.0",
     "@tailwindcss/forms": "^0.3.4",
     "@tailwindcss/line-clamp": "^0.2.2",
@@ -16,7 +13,7 @@
     "@xstate/react": "^1.6.2",
     "autoprefixer": "^10.4.0",
     "jotai": "^1.4.3",
-    "next": "^12.0.3",
+    "next": "^12.0.4",
     "next-auth": "beta",
     "postcss": "^8.3.11",
     "react": "^17.0.2",
@@ -36,14 +33,14 @@
     "format": "eslint --fix && prettier --write src"
   },
   "devDependencies": {
-    "@types/react": "^17.0.34",
+    "@types/react": "^17.0.35",
     "eslint": "7",
-    "eslint-config-next": "12.0.3",
+    "eslint-config-next": "12.0.4",
     "husky": "^7.0.4",
     "lint-staged": ">=11.2.6",
     "prettier": "^2.4.1",
-    "prisma": "3.4.2",
-    "typescript": "^4.4.4"
+    "prisma": "3.5.0",
+    "typescript": "^4.5.2"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",

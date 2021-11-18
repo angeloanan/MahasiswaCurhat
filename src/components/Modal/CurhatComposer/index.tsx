@@ -6,10 +6,11 @@ import { PaperClipIcon } from '@heroicons/react/solid'
 import MoodSelector from './MoodSelector'
 import { atom, useAtom } from 'jotai'
 import { ErrorBoundary } from 'react-error-boundary'
+import type { FallbackProps } from 'react-error-boundary'
 
 export const CurhatModalOpenAtom = atom(false)
 
-function ErrorFallback({ error, resetErrorBoundary }) {
+function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
     <div role='alert'>
       <p>Something went wrong:</p>
@@ -21,12 +22,15 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 
 function CurhatComposer() {
   const [isOpen, setIsOpen] = useAtom(CurhatModalOpenAtom)
+  const [isSending, setIsSending] = React.useState(false)
 
   const { register, handleSubmit } = useForm()
 
   const onCurhatSubmit = handleSubmit((data) => {
+    setIsSending(true)
     alert(JSON.stringify(data, null, 2))
 
+    setIsSending(false)
     setIsOpen(false)
   })
 
@@ -59,7 +63,9 @@ function CurhatComposer() {
               </div>
               <input
                 type='submit'
-                className='flex items-center gap-2 px-4 py-2 text-indigo-100 bg-indigo-800 rounded-md hover:bg-indigo-900 hover:text-white'
+                className={`flex items-center gap-2 px-4 py-2 text-indigo-100 bg-indigo-800 rounded-md hover:bg-indigo-900 hover:text-white ${
+                  isSending && ''
+                }`}
               />
             </div>
           </form>

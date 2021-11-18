@@ -1,13 +1,10 @@
-import NextAuth from 'next-auth'
+import NextAuth, { Session, User } from 'next-auth'
 import FacebookProvider from 'next-auth/providers/facebook'
 import TwitterProvider from 'next-auth/providers/twitter'
 import GoogleProvider from 'next-auth/providers/google'
-import EmailProvider from 'next-auth/providers'
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '../../../lib/prisma'
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -15,14 +12,32 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.NEXTAUTH_GOOGLE_CLIENT_ID!,
       clientSecret: process.env.NEXTAUTH_GOOGLE_CLIENT_SECRET!,
+      async profile(profile) {
+        return {
+          id: profile.sub,
+          email: profile.email,
+        }
+      },
     }),
     FacebookProvider({
       clientId: process.env.NEXTAUTH_FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.NEXTAUTH_FACEBOOK_CLIENT_SECRET!,
+      async profile(profile, tokens) {
+        return {
+          id: profile.id,
+          email: profile.email,
+        }
+      },
     }),
     TwitterProvider({
       clientId: process.env.NEXTAUTH_TWITTER_CLIENT_ID!,
       clientSecret: process.env.NEXTAUTH_TWITTER_CLIENT_SECRET!,
+      async profile(profile) {
+        return {
+          id: profile.id,
+          email: profile.email,
+        }
+      },
     }),
     // EmailProvider({
     //   // ...
@@ -34,6 +49,20 @@ export default NextAuth({
     signIn: '/auth/signin',
     newUser: '/auth/newuser',
     signOut: '/auth/signout',
+  },
+
+  callbacks: {
+    async session({ session, user }) {
+      const userObject = await prisma.user.findUnique({
+        where: { id: user.id },
+        rejectOnNotFound: false,
+      })
+
+      session.user.id = user.id
+      session.user.username = userObject?.username as string | undefined
+
+      return session
+    },
   },
 
   logger: {

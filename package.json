@@ -22,13 +22,15 @@
     "react-hook-form": "^7.19.5",
     "swr": "^1.0.1",
     "tailwindcss": "^2.2.19",
-    "xstate": "^4.26.0"
+    "xstate": "^4.26.0",
+    "zod": "^3.11.6"
   },
   "scripts": {
     "dev": "next dev",
     "build": "prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint",
+    "migrate": "prisma migrate",
     "prepare": "husky install",
     "format": "eslint --fix && prettier --write src"
   },

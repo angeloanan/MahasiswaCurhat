@@ -12,8 +12,7 @@ const HomePage = () => {
       <div>Your authentication status: {status}</div>
 
       <div className='p-4'>
-        <div>Email: {data?.user?.email}</div>
-        <div>Name: {data?.user?.name}</div>
+        <div>Username: {data?.user?.username}</div>
       </div>
 
       <NextLink href='/api/auth/signin' passHref>

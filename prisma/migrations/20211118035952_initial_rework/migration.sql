@@ -1,10 +1,17 @@
+-- CreateEnum
+CREATE TYPE "Mood" AS ENUM ('HAPPY', 'SAD', 'ANGRY', 'ANXIOUS', 'CONFUSED', 'EXCITED', 'RELAXED', 'STRESSED', 'TIRED');
+
+-- CreateEnum
+CREATE TYPE "SexualityPronouns" AS ENUM ('MALE', 'FEMALE');
+
 -- CreateTable
 CREATE TABLE "Post" (
     "id" TEXT NOT NULL,
     "authorId" TEXT NOT NULL,
     "content" TEXT NOT NULL,
+    "mood" "Mood",
     "attachment" TEXT,
-    "timestamp" TIMESTAMP(3) NOT NULL,
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
@@ -12,14 +19,12 @@ CREATE TABLE "Post" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "name" TEXT,
     "username" TEXT,
-    "birthdate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "gender" TEXT NOT NULL DEFAULT E'Male',
-    "email" TEXT,
-    "emailVerified" TIMESTAMP(3),
-    "image" TEXT,
+    "birthdate" TIMESTAMP(3),
+    "gender" "SexualityPronouns",
     "university" TEXT,
+    "email" TEXT NOT NULL,
+    "emailVerified" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

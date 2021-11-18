@@ -15,7 +15,7 @@ function RightNav() {
 
   return (
     <div className='flex flex-row items-center h-full col-span-8 col-start-13 gap-4'>
-      {status === 'loading' ? null : status == 'unauthenticated' ? (
+      {status === 'loading' ? null : status == 'unauthenticated' || data == null ? (
         <>
           <NextLink href='/login' passHref>
             <a className='flex items-center gap-2 px-4 py-2 text-indigo-100 bg-indigo-800 rounded-md hover:bg-indigo-900 hover:text-white'>
@@ -34,9 +34,16 @@ function RightNav() {
             <PlusIcon className='w-5 h-5' /> Curhat
           </Button>
 
-          <NextLink href={`/profile/${data?.user?.name}`}>
+          <NextLink href={`/profile/${data?.user?.username}`}>
             <a className='relative w-12 h-12 rounded-full'>
-              <NextImage src={data?.user?.image ?? ''} layout='fill' className='rounded-full' />
+              <NextImage
+                src={
+                  data?.user?.image ??
+                  `https://source.boringavatars.com/beam/256/${encodeURIComponent(data?.user.id)}}`
+                }
+                layout='fill'
+                className='rounded-full'
+              />
             </a>
           </NextLink>
         </div>

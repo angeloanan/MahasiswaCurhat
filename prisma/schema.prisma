@@ -11,14 +11,32 @@ generator client {
   previewFeatures = ["fullTextSearch"]
 }
 
+enum Mood {
+  HAPPY
+  SAD
+  ANGRY
+  ANXIOUS
+  CONFUSED
+  EXCITED
+  RELAXED
+  STRESSED
+  TIRED
+}
+
+enum SexualityPronouns {
+  MALE
+  FEMALE
+}
+
 model Post {
   id         String  @id @unique @default(cuid())
   authorId   String
   author     User    @relation("postAuthor", fields: [authorId], references: [id])
   content    String
+  mood       Mood?
   attachment String?
 
-  timestamp DateTime
+  timestamp DateTime @default(now())
 
   upvote   User[]    @relation("upvote")
   downvote User[]    @relation("downvote")
@@ -28,21 +46,17 @@ model Post {
 }
 
 model User {
-  id        String   @id @unique @default(uuid())
-  name      String?
-  username  String?  @unique
-  birthdate DateTime @default(now())
-  gender    String   @default("Male")
+  id         String             @id @unique @default(uuid())
+  username   String?            @unique
+  birthdate  DateTime?
+  gender     SexualityPronouns?
+  university String?
 
   // NextAuth
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
   accounts      Account[]
   sessions      Session[]
-
-  // TODO: Change to enum
-  university String?
+  email         String    @unique
+  emailVerified DateTime?
 
   posts         Post[] @relation("postAuthor")
   postUpvotes   Post[] @relation("upvote")
@@ -51,7 +65,6 @@ model User {
   comments      Comment[]
   postReports   PostReport[]
   commentReport CommentReport[]
-
 }
 
 model Comment {

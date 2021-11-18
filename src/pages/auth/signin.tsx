@@ -1,3 +1,4 @@
+import type { GetServerSideProps } from 'next'
 import { BuiltInProviderType } from 'next-auth/providers'
 import { ClientSafeProvider, getProviders, LiteralUnion, signIn } from 'next-auth/react'
 
@@ -5,7 +6,7 @@ interface SignInPageProps {
   providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>
 }
 
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const providers = await getProviders()
   return {
     props: { providers },

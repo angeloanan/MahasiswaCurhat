@@ -54,7 +54,7 @@ function RightNav() {
   )
 }
 
-function NavbarLinks({ children, path }) {
+const NavbarLinks: React.FunctionComponent<{ path: string }> = ({ children, path }) => {
   const router = useRouter()
 
   return (

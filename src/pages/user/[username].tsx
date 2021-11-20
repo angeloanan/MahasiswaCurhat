@@ -1,28 +1,64 @@
 import * as React from 'react'
 import NextLink from 'next/link'
 
-import { useSession } from 'next-auth/react'
+import type { GetStaticProps, GetStaticPaths } from 'next'
 
-const HomePage = () => {
-  const { data, status } = useSession()
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
+import { User } from '.prisma/client'
+
+interface UserPageProps {
+  data: Partial<User>
+}
+
+export const getStaticProps: GetStaticProps<UserPageProps, { username: string }> = async (
+  context,
+) => {
+  if (context.params?.username == null) return { notFound: true, revalidate: 60 }
+
+  const userDetails = await prisma?.user.findMany({
+    where: { username: { equals: context.params.username, mode: 'insensitive' } },
+    select: {
+      id: true,
+      username: true,
+      gender: true,
+      universityName: true,
+      posts: true,
+      comments: true,
+    },
+  })
+
+  if (userDetails == null) return { notFound: true, revalidate: 60 }
+
+  return {
+    props: {
+      data: userDetails[0],
+    },
+    revalidate: 300,
+  }
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const usernames: string[] = ['Angelo']
+
+  return {
+    paths: usernames.map((u) => `/user/${u}`),
+    fallback: true,
+  }
+}
+
+const UserPage = (props: UserPageProps) => {
+  const router = useRouter()
+
+  // This is only shown when still doing data fetching
+  if (router.isFallback) return <div className='mx-auto'>Loading...</div>
 
   return (
-    <>
-      <div className='text-2xl font-bold'>Mahasiswa curhat</div>
-      <div>Your authentication status: {status}</div>
-
-      <div className='p-4'>
-        <div>Username: {data?.user?.username}</div>
-      </div>
-
-      <NextLink href='/api/auth/signin' passHref>
-        <a className='p-4 m-2 text-blue-600 bg-yellow-400'>Sign in</a>
-      </NextLink>
-      <NextLink href='/api/auth/signout' passHref>
-        <a className='p-4 m-2 text-red-600 bg-yellow-400 '>Sign out</a>
-      </NextLink>
-    </>
+    <div className='w-full mx-auto max-w-prose'>
+      <div>You are visiting {props.data.username}&apos;s profile page</div>
+      <pre>{JSON.stringify(props.data, null, 2)}</pre>
+    </div>
   )
 }
 
-export default HomePage
+export default UserPage

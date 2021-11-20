@@ -46,11 +46,12 @@ model Post {
 }
 
 model User {
-  id         String             @id @unique @default(uuid())
-  username   String?            @unique
-  birthdate  DateTime?
-  gender     SexualityPronouns?
-  university String?
+  id             String             @id @unique @default(uuid())
+  username       String?            @unique
+  birthdate      DateTime?
+  gender         SexualityPronouns?
+  universityName String?
+  university     University?        @relation(fields: [universityName], references: [name])
 
   // NextAuth
   accounts      Account[]
@@ -65,6 +66,12 @@ model User {
   comments      Comment[]
   postReports   PostReport[]
   commentReport CommentReport[]
+}
+
+model University {
+  name String @id @unique
+
+  students User[]
 }
 
 model Comment {

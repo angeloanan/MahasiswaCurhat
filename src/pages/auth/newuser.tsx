@@ -60,7 +60,7 @@ function NewUserPage() {
     try {
       setIsSubmitting(true)
 
-      alert(JSON.stringify(data, null, 2))
+      console.log('Form data', JSON.stringify(data, null, 2))
       const fetchRequest = await fetch('/api/newuser', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

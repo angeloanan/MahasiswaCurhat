@@ -40,10 +40,10 @@ export const getStaticProps: GetStaticProps<UserPageProps, { username: string }>
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const usernames: string[] = ['Angelo']
+  const usernames = await prisma.user.findMany({ take: 100, select: { username: true } })
 
   return {
-    paths: usernames.map((u) => `/user/${u}`),
+    paths: usernames.filter((u) => u != null).map((u) => `/user/${u}`),
     fallback: true,
   }
 }

@@ -5,6 +5,7 @@ import type { GetStaticProps, GetStaticPaths } from 'next'
 
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
+import { prisma } from '../../lib/prisma'
 import { User } from '.prisma/client'
 
 interface UserPageProps {

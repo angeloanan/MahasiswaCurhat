@@ -16,6 +16,14 @@ async function NewUser(req: NextApiRequest, res: NextApiResponse) {
     const { body } = req
     const formData = NewUserFormSchema.parse(body)
 
+    const findUsername = await prisma.user.findMany({
+      where: { username: { mode: 'insensitive', equals: formData.username } },
+    })
+
+    if (findUsername.length > 0) {
+      throw new Error('Username already exists')
+    }
+
     await prisma.user.update({
       where: { id: session.user.id },
       data: {

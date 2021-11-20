@@ -1,23 +1,60 @@
 import * as React from 'react'
+import * as z from 'zod'
+import useSWR from 'swr'
+import CreatableSelect from 'react-select/creatable'
 
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import * as z from 'zod'
-import { NewUserFormSchema } from '../../schemas/NewUserForm'
+import { NewUserFormSchema, SexualityPronouns } from '../../schemas/NewUserForm'
 import { RadioGroup } from '@headlessui/react'
-import { SexualityPronouns } from '.prisma/client'
+import DatePicker from 'react-datepicker'
 import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 
+const fetcher = (url: string) => fetch(url).then((r) => r.json())
 function NewUserPage() {
-  const [isSubmitting, setIsSubmitting] = React.useState(false)
-
   const router = useRouter()
-  const { register, control, handleSubmit, setValue, getValues } = useForm<
-    z.infer<typeof NewUserFormSchema>
-  >({
-    // resolver: zodResolver(NewUserFormSchema) // https://github.com/react-hook-form/resolvers/issues/271
+  const { status, data } = useSession({
+    required: true,
+    onUnauthenticated: () => router.replace('/'),
   })
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const { data: universitiesList, error: universityError } = useSWR<string[]>(
+    '/api/universities',
+    fetcher,
+  )
+  const UniversitiesOptions = React.useMemo(() => {
+    return universitiesList?.map((u) => {
+      return { label: u, value: u }
+    })
+  }, [universitiesList])
+
+  React.useEffect(() => {
+    console.log('UseEffect Trigerred')
+    if (status === 'authenticated' && data?.user.username != null) {
+      router.replace('/')
+    }
+  }, [status, data, router])
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useForm<z.infer<typeof NewUserFormSchema>>({
+    // https://github.com/react-hook-form/resolvers/issues/271
+    // resolver: zodResolver(NewUserFormSchema)
+  })
+
+  console.group('Page re-render')
+  console.log('Universities:', universitiesList)
+  console.log('UniversitiesOptions:', UniversitiesOptions)
+  universityError && console.error('Universities error:', universityError)
+  Object.keys(errors).length >= 1 && console.error('Form errors:', errors)
+  console.groupEnd()
 
   const onFormSubmit = handleSubmit(async (data) => {
     try {
@@ -31,19 +68,20 @@ function NewUserPage() {
       })
 
       if (fetchRequest.status === 200) {
-        router.replace('/')
+        window.location.assign('/')
       } else {
         throw await fetchRequest.json()
       }
     } catch (e) {
       console.error(e)
+      alert(e)
     } finally {
       setIsSubmitting(false)
     }
   })
 
   return (
-    <div className='flex flex-col max-w-screen-lg min-h-screen p-8 mx-auto mt-16'>
+    <div className='flex flex-col max-w-screen-lg min-h-screen p-8 mx-auto'>
       {/* Title thing */}
       <div className=''>
         <h1 className='text-lg font-medium leading-6 text-gray-900'>Welcome to Mahasiswa Curhat</h1>
@@ -59,7 +97,7 @@ function NewUserPage() {
       >
         <div className='sm:col-span-4'>
           <label htmlFor='username' className='block text-sm font-medium text-gray-700'>
-            Username
+            Username <span className='text-red-500'>*</span>
           </label>
           <div className='flex mt-1 rounded-md shadow-sm'>
             <span className='inline-flex items-center px-3 text-gray-500 border border-r-0 border-gray-300 rounded-l-md bg-gray-50 sm:text-sm'>
@@ -68,12 +106,38 @@ function NewUserPage() {
             <input
               type='text'
               className='flex-1 block w-full min-w-0 border-gray-300 rounded-none focus:ring-indigo-500 focus:border-indigo-500 rounded-r-md sm:text-sm'
-              {...register('username')}
+              {...register('username', {
+                required: { value: true, message: 'You must select your username' },
+              })}
             />
           </div>
+          {errors.username && (
+            <p className='mt-1 text-sm italic text-red-500'>* {errors.username.message}</p>
+          )}
         </div>
 
+        {/* Birthdate */}
         <div className='sm:col-span-4'>
+          <label htmlFor='birthdate' className='block text-sm font-medium text-gray-700'>
+            Date of birth
+          </label>
+          <Controller
+            name='birthdate'
+            control={control}
+            render={({ field: { onChange } }) => (
+              <DatePicker
+                selected={new Date(getValues('birthdate') ?? null)}
+                className='w-full border-gray-300 rounded'
+                onChange={(e: Date) => {
+                  onChange(e)
+                  setValue('birthdate', e.toISOString())
+                }}
+              />
+            )}
+          />
+        </div>
+
+        {/* <div className='sm:col-span-4'>
           <label
             htmlFor='photo'
             className='grid grid-cols-1 mt-6 text-sm font-medium text-gray-700 gap-y-6 gap-x-4 sm:grid-cols-6'
@@ -90,7 +154,7 @@ function NewUserPage() {
               <input type='file' className='sr-only' name='photo' />
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Gender */}
         <div className='sm:col-span-4'>
@@ -98,6 +162,7 @@ function NewUserPage() {
           <Controller
             name='gender'
             control={control}
+            rules={{ required: { value: true, message: 'You must fill your gender' } }}
             render={({ field: { onChange } }) => (
               <RadioGroup<'div', SexualityPronouns>
                 value={getValues('gender')}
@@ -107,14 +172,14 @@ function NewUserPage() {
                 }}
               >
                 <RadioGroup.Label className='block text-sm font-medium text-gray-700'>
-                  Gender
+                  Gender <span className='text-red-500'>*</span>
                 </RadioGroup.Label>
-                <div className='flex gap-4 text-base'>
+                <div className='flex gap-4 mt-1 text-base'>
                   <RadioGroup.Option<'div', SexualityPronouns>
                     value='MALE'
                     className={({ checked, active }) =>
-                      `p-1 rounded cursor-pointer ${
-                        checked ? `bg-blue-500 text-blue-100` : `bg-gray-200 text-gray-600`
+                      `p-1 px-2 rounded cursor-pointer select-none border border-gray-300 ${
+                        checked ? `bg-blue-500 text-blue-50` : `bg-gray-50 text-gray-600`
                       }`
                     }
                   >
@@ -123,8 +188,8 @@ function NewUserPage() {
                   <RadioGroup.Option<'div', SexualityPronouns>
                     value='FEMALE'
                     className={({ checked, active }) =>
-                      `p-1 rounded cursor-pointer ${
-                        checked ? `bg-red-500 text-red-100` : `bg-gray-200 text-gray-600`
+                      `p-1 px-2 rounded cursor-pointer select-none border border-gray-300 ${
+                        checked ? `bg-red-500 text-red-50` : `bg-gray-50 text-gray-600`
                       }`
                     }
                   >
@@ -134,6 +199,39 @@ function NewUserPage() {
               </RadioGroup>
             )}
           />
+          {errors.gender && (
+            <div className='mt-1 text-sm italic text-red-500'>* {errors.gender.message}</div>
+          )}
+        </div>
+
+        {/* University */}
+        <div className='sm:col-span-4'>
+          <label htmlFor='university' className='block text-sm font-medium text-gray-700'>
+            Current University / College <span className='text-red-500'>*</span>
+          </label>
+          <Controller
+            name='university'
+            control={control}
+            rules={{ required: { value: true, message: 'You must fill in your university' } }}
+            render={({ field: { onChange } }) => (
+              <CreatableSelect
+                options={UniversitiesOptions}
+                isLoading={!universitiesList}
+                placeholder='Universitas bawah pohon bambu...'
+                className='mt-1'
+                onChange={(v) => {
+                  console.log('React select change', v)
+                  if (v != null) {
+                    onChange(v.value)
+                    setValue('university', v.value)
+                  }
+                }}
+              />
+            )}
+          />
+          {errors.university && (
+            <div className='mt-1 text-sm italic text-red-500'>* {errors.university.message}</div>
+          )}
         </div>
 
         {/* Submit button */}
@@ -149,7 +247,5 @@ function NewUserPage() {
     </div>
   )
 }
-
-NewUserPage.disableLayout = true
 
 export default NewUserPage

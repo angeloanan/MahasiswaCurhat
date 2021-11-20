@@ -1,6 +1,8 @@
 import * as z from 'zod'
 
+// TODO: Use Prisma's built in enum
 export const SexualityPronouns = z.enum(['MALE', 'FEMALE'])
+export type SexualityPronouns = z.infer<typeof SexualityPronouns>
 
 export const NewUserFormSchema = z.object({
   username: z
@@ -10,7 +12,9 @@ export const NewUserFormSchema = z.object({
     })
     .min(3, { message: 'Username must be longer' })
     .max(16, { message: 'Username must not be longer than 16 characters' }),
+  photo: z.string().url().optional(),
   gender: SexualityPronouns,
-  birthdate: z.date(),
+  // Support for Date is in RFC, https://github.com/colinhacks/zod/issues/126
+  birthdate: z.string(),
   university: z.string().min(3),
 })

@@ -1,3 +1,4 @@
+import '../lib/why-did-you-render'
 import '@fontsource/inter/variable.css'
 import 'tailwindcss/tailwind.css'
 import './styles.css'

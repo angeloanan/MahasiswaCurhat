@@ -34,7 +34,7 @@ function RightNav() {
             <PlusIcon className='w-5 h-5' /> Curhat
           </Button>
 
-          <NextLink href={`/profile/${data?.user?.username}`}>
+          <NextLink href={`/user/${data?.user?.username}`}>
             <a className='relative w-12 h-12 rounded-full'>
               <NextImage
                 src={

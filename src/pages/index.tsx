@@ -1,9 +1,10 @@
 import * as React from 'react'
 import NextLink from 'next/link'
 
+import type { NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 
-const HomePage = () => {
+const HomePage: NextPage = () => {
   const { data, status } = useSession()
 
   return (

@@ -2,8 +2,9 @@ import * as React from 'react'
 
 import NextImage from 'next/image'
 import { useRouter } from 'next/router'
+import { NextPageWithDisableLayout } from './_app'
 
-function NotFound() {
+const NotFound: NextPageWithDisableLayout = () => {
   const router = useRouter()
 
   return (

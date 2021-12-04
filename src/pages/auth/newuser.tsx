@@ -11,6 +11,7 @@ import { RadioGroup } from '@headlessui/react'
 import DatePicker from 'react-datepicker'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
+import { isUsernameAvailableResponse } from '../api/user/[username]/available'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 function NewUserPage() {
@@ -31,7 +32,6 @@ function NewUserPage() {
   }, [universitiesList])
 
   React.useEffect(() => {
-    console.log('UseEffect Trigerred')
     if (status === 'authenticated' && data?.user.username != null) {
       router.replace('/')
     }
@@ -43,17 +43,38 @@ function NewUserPage() {
     handleSubmit,
     setValue,
     getValues,
+    watch,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<z.infer<typeof NewUserFormSchema>>({
     // https://github.com/react-hook-form/resolvers/issues/271
-    // resolver: zodResolver(NewUserFormSchema)
+    resolver: zodResolver(NewUserFormSchema),
   })
+
+  // Handle duped username
+  const watchUsername = watch('username', '')
+  React.useEffect(() => {
+    const validateUsername = async () => {
+      if (watchUsername == '') return
+      clearErrors('username')
+      const fetchRequest = await fetch(`/api/user/${watchUsername}/available`)
+      const fetchResponse = (await fetchRequest.json()) as isUsernameAvailableResponse
+
+      if (typeof fetchResponse.status === 'number') {
+        setError('username', { type: 'pattern', message: 'Backend error' })
+      } else if (fetchResponse.status !== 'AVAILABLE')
+        setError('username', { type: 'value', message: 'Username is already taken' })
+    }
+
+    validateUsername()
+  }, [clearErrors, setError, watchUsername])
 
   console.group('Page re-render')
   console.log('Universities:', universitiesList)
-  console.log('UniversitiesOptions:', UniversitiesOptions)
+  console.log('Form inputs:', getValues())
   universityError && console.error('Universities error:', universityError)
-  Object.keys(errors).length >= 1 && console.error('Form errors:', errors)
+  Object.keys(errors).length >= 1 && console.warn('Form errors:', errors)
   console.groupEnd()
 
   const onFormSubmit = handleSubmit(async (data) => {
@@ -74,7 +95,7 @@ function NewUserPage() {
       }
     } catch (e) {
       console.error(e)
-      alert(e)
+      alert(JSON.stringify(e, null, 2))
     } finally {
       setIsSubmitting(false)
     }
@@ -137,6 +158,7 @@ function NewUserPage() {
           />
         </div>
 
+        {/* TODO: Implement profile pictures */}
         {/* <div className='sm:col-span-4'>
           <label
             htmlFor='photo'

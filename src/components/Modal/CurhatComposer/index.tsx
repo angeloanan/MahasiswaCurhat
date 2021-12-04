@@ -7,6 +7,9 @@ import MoodSelector from './MoodSelector'
 import { atom, useAtom } from 'jotai'
 import { ErrorBoundary } from 'react-error-boundary'
 import type { FallbackProps } from 'react-error-boundary'
+import LoadingIndicator from '../../Icon/LoadingIndicator'
+import { useRouter } from 'next/router'
+import { CurhatCreateResponse } from '../../../pages/api/curhat/create'
 
 export const CurhatModalOpenAtom = atom(false)
 
@@ -24,16 +27,46 @@ function CurhatComposer() {
   const [isOpen, setIsOpen] = useAtom(CurhatModalOpenAtom)
   const [isSending, setIsSending] = React.useState(false)
 
+  const router = useRouter()
   const { register, handleSubmit } = useForm()
 
-  const onCurhatSubmit = handleSubmit((data) => {
+  const onCurhatSubmit = handleSubmit(async (data) => {
     setIsSending(true)
-    alert(JSON.stringify(data, null, 2))
+
+    // TODO: Error handling
+
+    const request = await fetch('/api/curhat/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+
+    const response = (await request.json()) as CurhatCreateResponse
+
+    if (response.status === 200) {
+      router.push(`/curhat/${response.postId}`)
+    } else {
+      alert(response.error)
+    }
 
     setIsSending(false)
     setIsOpen(false)
   })
 
+  // Handle CTRL + Enter
+  const onKeyDown = React.useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault()
+        onCurhatSubmit()
+      }
+    },
+    [onCurhatSubmit],
+  )
+
+  // TODO: Split to smaller component
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
@@ -49,6 +82,7 @@ function CurhatComposer() {
               placeholder='Write your heartfelt confession...'
               defaultValue={''}
               className='block w-full h-32 p-0 placeholder-gray-500 border-0 resize-none focus:ring-0 sm:text-sm'
+              onKeyDown={onKeyDown}
               {...register('content')}
             />
             <div className='flex justify-end'>
@@ -56,17 +90,25 @@ function CurhatComposer() {
             </div>
 
             <hr />
-
+            {/* Bottom bar */}
             <div className='flex justify-between'>
-              <div className='flex items-center gap-2 italic text-gray-500 hover:text-gray-600'>
+              <div className='flex items-center gap-2 italic text-gray-500 cursor-not-allowed hover:text-gray-600'>
                 <PaperClipIcon className='w-5 h-5' /> Attach files
               </div>
-              <input
+              <button
                 type='submit'
                 className={`flex items-center gap-2 px-4 py-2 text-indigo-100 bg-indigo-800 rounded-md hover:bg-indigo-900 hover:text-white ${
-                  isSending && ''
+                  isSending && 'disabled'
                 }`}
-              />
+              >
+                {isSending ? (
+                  <>
+                    <LoadingIndicator /> Submitting
+                  </>
+                ) : (
+                  'Submit'
+                )}
+              </button>
             </div>
           </form>
         </div>

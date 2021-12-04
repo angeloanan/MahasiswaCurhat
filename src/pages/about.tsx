@@ -1,6 +1,8 @@
 import * as React from 'react'
 
-function AboutPage() {
+import { NextPage } from 'next'
+
+const AboutPage: NextPage = () => {
   return (
     <div className='px-4 py-16 overflow-hidden sm:px-6 lg:px-8'>
       <div className='mx-auto max-w-max lg:max-w-7xl'>

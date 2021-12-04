@@ -43,10 +43,14 @@ async function NewUser(req: NextApiRequest, res: NextApiResponse) {
       },
     })
 
-    res.status(200).json({ name: 'John Doe' })
+    res.status(200).json({ status: 200, message: 'Success' })
   } catch (error) {
+    console.error('[API] /newuser', error)
+
     if (error instanceof ZodError) {
       res.status(400).json({ status: 400, error: error.message })
+    } else if (error instanceof Error) {
+      res.status(500).json({ status: 500, error: error.message })
     } else {
       res.status(500).json({ status: 500, error: error })
     }

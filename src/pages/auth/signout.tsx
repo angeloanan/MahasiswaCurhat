@@ -1,9 +1,11 @@
 import * as React from 'react'
 
-import NextRouter from 'next/router'
+import { useRouter } from 'next/router'
 import { getSession, signOut } from 'next-auth/react'
 
 function SignOut() {
+  const router = useRouter()
+
   React.useEffect(() => {
     const logout = async () => {
       try {
@@ -14,15 +16,15 @@ function SignOut() {
           })
         }
 
-        NextRouter.push('/')
+        router.push('/')
       } catch (e) {
         console.error(e)
-        NextRouter.push('/')
+        router.push('/')
       }
     }
 
     logout()
-  }, [])
+  }, [router])
 
   return <div>Signing you out. Please wait a moment!</div>
 }

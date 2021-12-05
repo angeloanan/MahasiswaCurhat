@@ -38,9 +38,9 @@ function CurhatComposer() {
     const request = await fetch('/api/curhat/create', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     })
 
     const response = (await request.json()) as CurhatCreateResponse
@@ -63,7 +63,7 @@ function CurhatComposer() {
         onCurhatSubmit()
       }
     },
-    [onCurhatSubmit],
+    [onCurhatSubmit]
   )
 
   // TODO: Split to smaller component

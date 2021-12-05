@@ -25,18 +25,18 @@ const CreateCurhat: NextApiHandler<CurhatCreateResponse> = async (req, res) => {
       data: {
         author: {
           connect: {
-            id: session.user.id,
-          },
+            id: session.user.id
+          }
         },
         mood: curhatDetails.mood,
         content: curhatDetails.content,
-        attachment: curhatDetails.attachment,
-      },
+        attachment: curhatDetails.attachment
+      }
     })
 
     res.status(200).json({
       status: 200,
-      postId: post.id,
+      postId: post.id
     })
   } catch (error) {
     if (error instanceof ZodError) {

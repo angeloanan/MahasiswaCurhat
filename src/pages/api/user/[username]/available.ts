@@ -11,7 +11,7 @@ export type isUsernameAvailableResponse =
 const isUsernameAvailable: NextApiHandler<isUsernameAvailableResponse> = async (req, res) => {
   const username = req.query['username'] as string
   const findUsername = await prisma.user.findMany({
-    where: { username: { mode: 'insensitive', equals: username } },
+    where: { username: { mode: 'insensitive', equals: username } }
   })
 
   res.status(200).json({ status: findUsername.length === 0 ? 'AVAILABLE' : 'UNAVAILABLE' })

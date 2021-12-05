@@ -15,9 +15,9 @@ export default NextAuth({
       async profile(profile) {
         return {
           id: profile.sub,
-          email: profile.email,
+          email: profile.email
         }
-      },
+      }
     }),
     FacebookProvider({
       clientId: process.env.NEXTAUTH_FACEBOOK_CLIENT_ID!,
@@ -25,9 +25,9 @@ export default NextAuth({
       async profile(profile, tokens) {
         return {
           id: profile.id,
-          email: profile.email,
+          email: profile.email
         }
-      },
+      }
     }),
     TwitterProvider({
       clientId: process.env.NEXTAUTH_TWITTER_CLIENT_ID!,
@@ -35,10 +35,10 @@ export default NextAuth({
       async profile(profile) {
         return {
           id: profile.id,
-          email: profile.email,
+          email: profile.email
         }
-      },
-    }),
+      }
+    })
     // EmailProvider({
     //   // ...
     // })
@@ -48,21 +48,23 @@ export default NextAuth({
   pages: {
     signIn: '/auth/signin',
     newUser: '/auth/newuser',
-    signOut: '/auth/signout',
+    signOut: '/auth/signout'
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
     async session({ session, user }) {
       const userObject = await prisma.user.findUnique({
         where: { id: user.id },
-        rejectOnNotFound: false,
+        rejectOnNotFound: false
       })
 
       session.user.id = user.id
       session.user.username = userObject?.username as string | undefined
 
       return session
-    },
+    }
   },
 
   logger: {
@@ -74,6 +76,6 @@ export default NextAuth({
     },
     warn(code) {
       console.warn('[AUTH WARN]', code)
-    },
-  },
+    }
+  }
 })

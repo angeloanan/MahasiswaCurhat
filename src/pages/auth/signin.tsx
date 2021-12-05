@@ -9,7 +9,7 @@ interface SignInPageProps {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const providers = await getProviders()
   return {
-    props: { providers },
+    props: { providers }
   }
 }
 

@@ -18,12 +18,12 @@ function NewUserPage() {
   const router = useRouter()
   const { status, data } = useSession({
     required: true,
-    onUnauthenticated: () => router.replace('/'),
+    onUnauthenticated: () => router.replace('/')
   })
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const { data: universitiesList, error: universityError } = useSWR<string[]>(
     '/api/universities',
-    fetcher,
+    fetcher
   )
   const UniversitiesOptions = React.useMemo(() => {
     return universitiesList?.map((u) => {
@@ -46,10 +46,10 @@ function NewUserPage() {
     watch,
     setError,
     clearErrors,
-    formState: { errors },
+    formState: { errors }
   } = useForm<z.infer<typeof NewUserFormSchema>>({
     // https://github.com/react-hook-form/resolvers/issues/271
-    resolver: zodResolver(NewUserFormSchema),
+    resolver: zodResolver(NewUserFormSchema)
   })
 
   // Handle duped username
@@ -85,7 +85,7 @@ function NewUserPage() {
       const fetchRequest = await fetch('/api/newuser', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       })
 
       if (fetchRequest.status === 200) {
@@ -128,7 +128,7 @@ function NewUserPage() {
               type='text'
               className='flex-1 block w-full min-w-0 border-gray-300 rounded-none focus:ring-indigo-500 focus:border-indigo-500 rounded-r-md sm:text-sm'
               {...register('username', {
-                required: { value: true, message: 'You must select your username' },
+                required: { value: true, message: 'You must select your username' }
               })}
             />
           </div>

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import NextLink from 'next/link'
 
-import type { GetStaticProps, GetStaticPaths } from 'next'
+import type { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 
 import { useRouter } from 'next/router'
 import { prisma } from '../../lib/prisma'
@@ -11,8 +11,18 @@ interface UserPageProps {
   data: Partial<User>
 }
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  // const usernames = await prisma.user.findMany({ take: 100, select: { username: true } })
+
+  return {
+    // paths: usernames.filter((u) => u != null).map((u) => `/user/${u}`),
+    paths: [],
+    fallback: true
+  }
+}
+
 export const getStaticProps: GetStaticProps<UserPageProps, { username: string }> = async (
-  context,
+  context
 ) => {
   if (context.params?.username == null) return { notFound: true, revalidate: 60 }
 
@@ -24,31 +34,21 @@ export const getStaticProps: GetStaticProps<UserPageProps, { username: string }>
       gender: true,
       universityName: true,
       posts: true,
-      comments: true,
-    },
+      comments: true
+    }
   })
 
   if (userDetails == null) return { notFound: true, revalidate: 60 }
 
   return {
     props: {
-      data: userDetails[0],
+      data: JSON.parse(JSON.stringify(userDetails[0]))
     },
-    revalidate: 300,
+    revalidate: 300
   }
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // const usernames = await prisma.user.findMany({ take: 100, select: { username: true } })
-
-  return {
-    // paths: usernames.filter((u) => u != null).map((u) => `/user/${u}`),
-    paths: [],
-    fallback: true,
-  }
-}
-
-const UserPage = (props: UserPageProps) => {
+const UserPage: NextPage<UserPageProps> = (props) => {
   const router = useRouter()
 
   // This is only shown when still doing data fetching

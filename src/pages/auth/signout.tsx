@@ -12,7 +12,7 @@ function SignOut() {
         const session = await getSession()
         if (session != null) {
           await signOut({
-            redirect: true,
+            redirect: true
           })
         }
 

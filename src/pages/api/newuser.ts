@@ -17,7 +17,7 @@ async function NewUser(req: NextApiRequest, res: NextApiResponse) {
     const formData = NewUserFormSchema.parse(body)
 
     const findUsername = await prisma.user.findMany({
-      where: { username: { mode: 'insensitive', equals: formData.username } },
+      where: { username: { mode: 'insensitive', equals: formData.username } }
     })
 
     if (findUsername.length > 0) {
@@ -33,14 +33,14 @@ async function NewUser(req: NextApiRequest, res: NextApiResponse) {
         university: {
           connectOrCreate: {
             create: {
-              name: formData.university,
+              name: formData.university
             },
             where: {
-              name: formData.university,
-            },
-          },
-        },
-      },
+              name: formData.university
+            }
+          }
+        }
+      }
     })
 
     res.status(200).json({ status: 200, message: 'Success' })

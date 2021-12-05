@@ -5,7 +5,7 @@ import { prisma } from '../../lib/prisma'
 async function Universities(_req: NextApiRequest, res: NextApiResponse) {
   try {
     const universities = await prisma.university.findMany({
-      select: { name: true, students: false },
+      select: { name: true, students: false }
     })
 
     res.status(200).json(universities.map((university) => university.name))

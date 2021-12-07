@@ -1,8 +1,5 @@
 module.exports = {
-  mode: 'jit',
   purge: {
-    mode: 'all',
-    preserveHtmlElements: false,
     content: ['./src/pages/**/*.{js,jsx,ts,tsx}', './src/components/**/*.{js,jsx,ts,tsx}']
   },
   darkMode: 'media',

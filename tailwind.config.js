@@ -1,20 +1,25 @@
 module.exports = {
-  purge: ['./src/pages/**/*.{js,jsx,ts,tsx}', './src/components/**/*.{js,jsx,ts,tsx}'],
+  mode: 'jit',
+  purge: {
+    mode: 'all',
+    preserveHtmlElements: false,
+    content: ['./src/pages/**/*.{js,jsx,ts,tsx}', './src/components/**/*.{js,jsx,ts,tsx}']
+  },
   darkMode: 'media',
   theme: {
     extend: {
       fontFamily: {
-        sans: ['InterVar', 'Inter', 'sans-serif'],
-      },
-    },
+        sans: ['InterVar', 'Inter', 'sans-serif']
+      }
+    }
   },
   variants: {
-    extend: {},
+    extend: {}
   },
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
     require('@tailwindcss/line-clamp'),
-    require('@tailwindcss/aspect-ratio'),
-  ],
+    require('@tailwindcss/aspect-ratio')
+  ]
 }

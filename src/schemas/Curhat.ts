@@ -9,7 +9,7 @@ export const CurhatMoodEnum = z.enum([
   'EXCITED',
   'RELAXED',
   'STRESSED',
-  'TIRED',
+  'TIRED'
 ])
 
 export const CreateCurhatSchema = z.object({
@@ -18,5 +18,5 @@ export const CreateCurhatSchema = z.object({
     .min(5, { message: 'Curhat must be longer' })
     .max(280, { message: 'Curhat must has exceeded 280 characters limit' }),
   mood: CurhatMoodEnum.optional(),
-  attachment: z.string().url({ message: 'Attachment must be a valid URL' }).optional(),
+  attachment: z.string().url({ message: 'Attachment must be a valid URL' }).optional()
 })

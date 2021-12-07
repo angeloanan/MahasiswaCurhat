@@ -6,6 +6,7 @@ import type { GetStaticProps, NextPage } from 'next'
 import type { Post, SexualityPronouns } from '@prisma/client'
 import type { Merge } from 'type-fest'
 
+import { NextSeo } from 'next-seo'
 import { prisma } from '../lib/prisma'
 import { useRouter } from 'next/router'
 import { differenceInYears } from 'date-fns'
@@ -15,6 +16,10 @@ type CustomExplorePageQueryReturnType = Post & {
     gender: SexualityPronouns | null
     universityName: string | null
     birthdate: Date | null
+  }
+  _count: {
+    upvote: number
+    downvote: number
   }
 }
 
@@ -39,7 +44,16 @@ export const getStaticProps: GetStaticProps<ExplorePageProps> = async () => {
           universityName: true,
           birthdate: true
         }
+      },
+      _count: {
+        select: {
+          upvote: true,
+          downvote: true
+        }
       }
+    },
+    orderBy: {
+      timestamp: 'desc'
     },
     take: 20
   })
@@ -62,24 +76,32 @@ const ExplorePage: NextPage<ExplorePageProps> = ({ posts }) => {
   if (isFallback) return <div>Loading curhat...</div>
 
   return (
-    <div className='mx-20 my-8'>
-      <div className='text-2xl font-medium text-gray-700'>Showing all curhats</div>
+    <>
+      <NextSeo title='Explore' />
+      <div className='mx-8 my-8 lg:mx-20'>
+        <div className='text-2xl font-medium text-gray-700'>Showing all curhats</div>
 
-      {posts.map((post) => {
-        return (
-          <NextLink href={`/curhat/${post.id}`} key={post.id} passHref>
-            <a>
-              <CurhatDisplay
-                age={differenceInYears(new Date(), new Date(post.author.birthdate))}
-                content={post.content}
-                gender={post.author.gender}
-                uni={post.author.universityName}
-              />
-            </a>
-          </NextLink>
-        )
-      })}
-    </div>
+        <div className='grid justify-center grid-cols-3 gap-4'>
+          {posts.map((post) => {
+            return (
+              <NextLink href={`/curhat/${post.id}`} key={post.id} passHref>
+                <a className='max-w-prose'>
+                  <CurhatDisplay
+                    age={differenceInYears(new Date(), new Date(post.author.birthdate))}
+                    content={post.content}
+                    gender={post.author.gender}
+                    uni={post.author.universityName}
+                    className='mt-4 transition-transform transform hover:-translate-y-1'
+                  />
+                </a>
+              </NextLink>
+            )
+          })}
+        </div>
+
+        <pre className='overflow-scroll'>{JSON.stringify(posts, null, 2)}</pre>
+      </div>
+    </>
   )
 }
 

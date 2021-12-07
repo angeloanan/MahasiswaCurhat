@@ -8,7 +8,7 @@ export const NewUserFormSchema = z.object({
   username: z
     .string()
     .regex(/^[a-zA-Z0-9_]+$/, {
-      message: 'Username must only contain letters, numbers or underscores',
+      message: 'Username must only contain letters, numbers or underscores'
     })
     .min(3, { message: 'Username must be longer' })
     .max(16, { message: 'Username must not be longer than 16 characters' }),
@@ -16,5 +16,5 @@ export const NewUserFormSchema = z.object({
   gender: SexualityPronouns,
   // Support for Date is in RFC, https://github.com/colinhacks/zod/issues/126
   birthdate: z.string(),
-  university: z.string().min(3),
+  university: z.string().min(3)
 })

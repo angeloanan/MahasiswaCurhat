@@ -1,13 +1,15 @@
 import * as React from 'react'
 
+import CurhatDisplay from '../../components/CurhatDisplay'
+
 import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import type { Merge } from 'type-fest'
 import type { Post, SexualityPronouns } from '.prisma/client'
 
+import { NextSeo } from 'next-seo'
 import { differenceInYears } from 'date-fns'
 import { prisma } from '../../lib/prisma'
 import { useRouter } from 'next/router'
-import CurhatDisplay from '../../components/CurhatDisplay'
 
 interface CurhatPageQuery extends NodeJS.Dict<string> {
   id: string
@@ -19,6 +21,10 @@ type CustomCurhatSelection = Post & {
     gender: SexualityPronouns | null
     universityName: string | null
   }
+  _count: {
+    downvote: number
+    upvote: number
+  }
 }
 
 interface CurhatPageProps {
@@ -26,7 +32,7 @@ interface CurhatPageProps {
     CustomCurhatSelection,
     {
       timestamp: string
-      author: { birthDate: string; gender: SexualityPronouns; universityName: string }
+      author: { birthdate: string; gender: SexualityPronouns; universityName: string }
     }
   >
 }
@@ -51,6 +57,12 @@ export const getStaticProps: GetStaticProps<CurhatPageProps, CurhatPageQuery> = 
           birthdate: true,
           gender: true,
           universityName: true
+        }
+      },
+      _count: {
+        select: {
+          downvote: true,
+          upvote: true
         }
       }
     },
@@ -77,23 +89,26 @@ const CurhatPage: NextPage<CurhatPageProps> = ({ curhatData }) => {
   const { isFallback } = useRouter()
 
   if (isFallback) {
-    return <div className='mx-20 mt-8'>Loading...</div>
+    return <div className='mx-8 mt-12 lg:mx-20'>Loading...</div>
   }
 
   return (
-    <div className='mx-20 mt-8'>
-      <CurhatDisplay
-        gender={curhatData.author.gender}
-        uni={curhatData.author.universityName}
-        age={differenceInYears(new Date(), new Date(curhatData.author.birthDate))}
-        content={curhatData.content}
-      />
+    <>
+      <NextSeo title={curhatData.content} />
+      <div className='mx-8 mt-12 lg:mx-20'>
+        <CurhatDisplay
+          withInfo
+          gender={curhatData.author.gender}
+          uni={curhatData.author.universityName}
+          age={differenceInYears(new Date(), new Date(curhatData.author.birthdate))}
+          content={curhatData.content}
+          totalKarma={curhatData._count.upvote - curhatData._count.downvote}
+        />
 
-      <div className=''>
-        Showing info for curhat id: {isFallback ? 'loading...' : curhatData?.id}
+        <div className=''>Showing info for curhat id: {curhatData?.id}</div>
+        <pre className='overflow-scroll'>{JSON.stringify(curhatData, null, 2)}</pre>
       </div>
-      <pre>{JSON.stringify(curhatData, null, 2)}</pre>
-    </div>
+    </>
   )
 }
 

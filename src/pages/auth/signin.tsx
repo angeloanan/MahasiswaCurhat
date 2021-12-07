@@ -31,7 +31,7 @@ const SignIn = ({ providers }: SignInPageProps) => {
             <button
               key={provider.name}
               className='w-full py-4 pt-2 text-gray-500 bg-white border border-gray-300 rounded-md'
-              onClick={() => signIn(provider.id)}
+              onClick={() => signIn(provider.id, { redirect: true })}
             >
               {provider.name}
             </button>

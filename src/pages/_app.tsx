@@ -2,13 +2,16 @@ import '../lib/why-did-you-render'
 import '@fontsource/inter/variable.css'
 import 'tailwindcss/tailwind.css'
 import './styles.css'
+import SEO from '../../next-seo.config'
 
+import { DefaultSeo } from 'next-seo'
 import type { AppProps } from 'next/app'
 import type { Session } from 'next-auth'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { SessionProvider } from 'next-auth/react'
 import Navbar from '../components/Navbar'
+import CurhatComposer from '../components/Modal/CurhatComposer'
 
 export type NextPageWithDisableLayout = NextPage & {
   disableLayout?: boolean
@@ -34,9 +37,11 @@ function CustomApp({ Component, pageProps: { session, ...pageProps } }: CustomAp
               content='6hRj86Hx02xLCsII57JKBQfSui5rHpi9mpF_8DLhDm4'
             />
           </Head>
+          <DefaultSeo {...SEO} />
+          <CurhatComposer />
           <Navbar />
 
-          <main className='flex flex-col content-center justify-center w-full pt-4 mx-auto'>
+          <main>
             <Component {...pageProps} />
           </main>
         </>

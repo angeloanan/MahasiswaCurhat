@@ -11,9 +11,7 @@ const HomePage: NextPage = () => {
     <div className='max-w-prose'>
       <div>Your authentication status: {status}</div>
 
-      <div className='p-4'>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </div>
+      <pre className='p-4 overflow-scroll'>{JSON.stringify(data, null, 2)}</pre>
 
       <NextLink href='/api/auth/signin' passHref>
         <a className='p-4 m-2 text-blue-600 bg-yellow-400'>Sign in</a>

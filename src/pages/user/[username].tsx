@@ -57,7 +57,7 @@ const UserPage: NextPage<UserPageProps> = (props) => {
   return (
     <div className='w-full mx-auto max-w-prose'>
       <div>You are visiting {props.data.username}&apos;s profile page</div>
-      <pre>{JSON.stringify(props.data, null, 2)}</pre>
+      <pre className='overflow-scroll'>{JSON.stringify(props.data, null, 2)}</pre>
     </div>
   )
 }

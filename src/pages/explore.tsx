@@ -100,8 +100,6 @@ const ExplorePage: NextPage<ExplorePageProps> = ({ posts }) => {
             )
           })}
         </div>
-
-        <pre className='overflow-scroll'>{JSON.stringify(posts, null, 2)}</pre>
       </div>
     </>
   )

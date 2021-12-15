@@ -19,7 +19,7 @@ function MoodSelector() {
 
   return (
     <Listbox value={selectedMood} onChange={setSelectedMood}>
-      <Listbox.Button className='relative inline-flex items-center gap-1 px-2 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-full whitespace-nowrap hover:bg-gray-100 sm:px-3'>
+      <Listbox.Button className='inline-flex relative gap-1 items-center py-2 px-2 text-sm font-medium text-gray-500 whitespace-nowrap bg-gray-100 rounded-full hover:bg-gray-100 sm:px-3'>
         {selectedMood != null ? (
           <>
             {React.createElement(selectedMood.icon, { className: 'h-5 w-5 text-gray-400' })}
@@ -32,14 +32,14 @@ function MoodSelector() {
         )}
       </Listbox.Button>
 
-      <Listbox.Options className='absolute bottom-0 py-2 mb-12 overflow-auto text-gray-800 bg-gray-100 rounded'>
+      <Listbox.Options className='overflow-auto absolute bottom-0 py-2 mb-12 text-gray-800 bg-gray-100 rounded'>
         {moods.map((mood) => (
           <Listbox.Option key={mood.name} value={mood}>
             {({ active, selected }) => (
               <li
                 className={`
-                  'relative select-none px-4 py-1 ' ${
-                    active ? 'bg-blue-200 text-blue-700' : ' text-gray-800'
+                  relative select-none px-4 py-1 ${
+                    active ? 'text-blue-700 bg-blue-200' : 'text-gray-800'
                   } ${selected ? 'font-bold' : ''}}`}
                 role='button'
               >

@@ -11,6 +11,10 @@ import { differenceInYears } from 'date-fns'
 import { prisma } from '../../lib/prisma'
 import { useRouter } from 'next/router'
 
+import { CurhatCommentForm } from '../../components/CurhatComment'
+import useSWR, { SWRConfig } from 'swr'
+import { CurhatCommentDisplay } from '../../components/CurhatComment/display'
+
 interface CurhatPageQuery extends NodeJS.Dict<string> {
   id: string
 }
@@ -27,7 +31,18 @@ type CustomCurhatSelection = Post & {
   }
 }
 
+interface CustomCurhatCommentResponse {
+  id: string
+  content: string
+  timestamp: string
+  author: {
+    id: string
+    username: string
+  }
+}
+
 interface CurhatPageProps {
+  curhatId: string
   curhatData: Merge<
     CustomCurhatSelection,
     {
@@ -35,7 +50,12 @@ interface CurhatPageProps {
       author: { birthdate: string; gender: SexualityPronouns; universityName: string }
     }
   >
+  fallback: {
+    [key: `/api/comment/${string}`]: CustomCurhatCommentResponse[]
+  }
 }
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -45,7 +65,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps<CurhatPageProps, CurhatPageQuery> = async (context) => {
-  const curhatId = context.params?.id
+  const curhatId = context.params?.id as string
+  if (curhatId == null) return { notFound: true }
 
   const curhatData = await prisma.post.findUnique({
     where: {
@@ -69,23 +90,71 @@ export const getStaticProps: GetStaticProps<CurhatPageProps, CurhatPageQuery> = 
     rejectOnNotFound: false
   })
 
-  if (curhatData == null) {
-    return {
-      notFound: true
-    }
-  }
+  if (curhatData == null) return { notFound: true }
 
-  const transformedCurhatData = JSON.parse(JSON.stringify(curhatData))
+  const curhatComments = await prisma.comment.findMany({
+    where: {
+      parentPostId: curhatId
+    },
+    select: {
+      id: true,
+      content: true,
+      timestamp: true,
+      author: {
+        select: {
+          id: true,
+          username: true
+        }
+      }
+    },
+    orderBy: {
+      timestamp: 'asc'
+    }
+  })
 
   return {
     props: {
-      curhatData: transformedCurhatData
+      curhatId: curhatId,
+      curhatData: JSON.parse(JSON.stringify(curhatData)),
+      fallback: {
+        [`/api/comments/${curhatId}`]: JSON.parse(JSON.stringify(curhatComments))
+      }
     },
-    revalidate: 60
+    revalidate: 1
   }
 }
 
-const CurhatPage: NextPage<CurhatPageProps> = ({ curhatData }) => {
+interface CurhatCommentLayoutProps {
+  curhatId: string
+}
+
+const CurhatCommentLayout = ({ curhatId }: CurhatCommentLayoutProps) => {
+  const { data: commentData } = useSWR<CustomCurhatCommentResponse[]>(
+    `/api/comments/${curhatId}`,
+    fetcher
+  )
+
+  console.log(commentData)
+
+  if (!commentData) return <div>Loading comments...</div>
+
+  return (
+    <div className='flex flex-col gap-3'>
+      {commentData?.map((comment) => (
+        <CurhatCommentDisplay
+          key={comment.id}
+          timestamp={comment.timestamp}
+          curhatId={curhatId}
+          authorUsername={comment.author.username}
+          authorUserid={comment.author.id}
+          content={comment.content}
+        />
+      ))}
+    </div>
+  )
+}
+
+const CurhatPage: NextPage<CurhatPageProps> = ({ curhatId, curhatData, fallback }) => {
   const { isFallback } = useRouter()
 
   if (isFallback) {
@@ -95,19 +164,22 @@ const CurhatPage: NextPage<CurhatPageProps> = ({ curhatData }) => {
   return (
     <>
       <NextSeo title={curhatData.content} />
-      <div className='mx-8 mt-12 lg:mx-20'>
-        <CurhatDisplay
-          withInfo
-          gender={curhatData.author.gender}
-          uni={curhatData.author.universityName}
-          age={differenceInYears(new Date(), new Date(curhatData.author.birthdate))}
-          content={curhatData.content}
-          totalKarma={curhatData._count.upvote - curhatData._count.downvote}
-        />
+      <SWRConfig value={{ fallback }}>
+        <div className='py-12 mx-8 lg:mx-20'>
+          <CurhatDisplay
+            withInfo
+            gender={curhatData.author.gender}
+            uni={curhatData.author.universityName}
+            age={differenceInYears(new Date(), new Date(curhatData.author.birthdate))}
+            content={curhatData.content}
+            totalKarma={curhatData._count.upvote - curhatData._count.downvote}
+          />
 
-        <div className=''>Showing info for curhat id: {curhatData?.id}</div>
-        <pre className='overflow-scroll'>{JSON.stringify(curhatData, null, 2)}</pre>
-      </div>
+          <CurhatCommentForm replyTo={curhatId} />
+          <hr className='my-4' />
+          <CurhatCommentLayout curhatId={curhatId} />
+        </div>
+      </SWRConfig>
     </>
   )
 }

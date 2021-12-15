@@ -1,7 +1,7 @@
 // @ts-check
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
+  enabled: process.env.ANALYZE === 'true'
 })
 
 /**
@@ -13,13 +13,19 @@ const nextConfig = {
       {
         source: '/login',
         destination: '/auth/signin',
-        permanent: false,
-      },
+        permanent: false
+      }
     ]
   },
   images: {
-    domains: ['lh3.googleusercontent.com', 'c.tenor.com', 'source.boringavatars.com'],
-  },
+    formats: ['image/avif', 'image/webp'],
+    domains: [
+      'lh3.googleusercontent.com',
+      'c.tenor.com',
+      'source.boringavatars.com',
+      'images.unsplash.com'
+    ]
+  }
 }
 
 module.exports = withBundleAnalyzer(nextConfig)

@@ -13,17 +13,17 @@ function RightNav() {
   const [, setCurhatModalOpen] = useAtom(CurhatModalOpenAtom)
 
   return (
-    <div className='flex flex-row items-center h-full gap-4'>
+    <div className='flex flex-row gap-4 items-center h-full'>
       {status === 'loading' ? null : status == 'unauthenticated' || data == null ? (
         <>
           <NextLink href='/login' passHref>
-            <a className='flex items-center gap-2 px-4 py-2 text-indigo-100 bg-indigo-800 rounded-md hover:bg-indigo-900 hover:text-white'>
+            <a className='flex gap-2 items-center py-2 px-4 text-indigo-100 bg-indigo-800 rounded-md hover:bg-indigo-900 hover:text-white'>
               Join us
             </a>
           </NextLink>
         </>
       ) : status == 'authenticated' ? (
-        <div className='flex items-center gap-6'>
+        <div className='flex gap-6 items-center'>
           <Button onClick={() => setCurhatModalOpen(true)}>
             <PlusIcon className='w-5 h-5' /> <div className='hidden md:block'>Curhat</div>
           </Button>
@@ -74,8 +74,8 @@ function Navbar() {
     <>
       <header className='sticky bg-gray-800'>
         <nav>
-          <div className='flex flex-row justify-between w-full px-2 py-4 pb-0 text-lg md:px-12 md:py-6'>
-            <div className='flex items-center gap-6'>
+          <div className='flex flex-row justify-between py-4 px-2 pb-0 w-full text-lg md:px-12 md:py-6'>
+            <div className='flex gap-6 items-center'>
               <NextLink href='/' passHref>
                 <a className='flex items-center px-4 text-lg font-bold text-white lg:text-2xl'>
                   Mahasiswa Curhat

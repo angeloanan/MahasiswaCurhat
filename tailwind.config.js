@@ -1,13 +1,12 @@
 module.exports = {
-  purge: {
-    content: ['./src/pages/**/*.{js,jsx,ts,tsx}', './src/components/**/*.{js,jsx,ts,tsx}']
-  },
-  darkMode: 'media',
+  content: [
+    './src/pages/**/*.{js,jsx,ts,tsx}',
+    './src/components/**/*.{js,jsx,ts,tsx}',
+    './src/public/**/*.html'
+  ],
   theme: {
-    extend: {
-      fontFamily: {
-        sans: ['InterVar', 'Inter', 'sans-serif']
-      }
+    fontFamily: {
+      sans: ['InterVar', 'Inter', 'sans-serif']
     }
   },
   variants: {

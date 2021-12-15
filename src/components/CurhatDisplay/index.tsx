@@ -24,11 +24,17 @@ type CurhatDisplayProps =
       totalKarma: number
     }
 
-function CurhatDisplay({ className, ...props }: React.ComponentProps<'div'> & CurhatDisplayProps) {
-  if (props.withInfo) {
+function CurhatDisplay({
+  className,
+  withInfo,
+  // @ts-expect-error bruh
+  totalKarma,
+  ...props
+}: React.ComponentProps<'div'> & CurhatDisplayProps) {
+  if (withInfo == true) {
     return (
       <div className={'flex max-w-3xl gap-4 ' + className}>
-        <CurhatInfo {...props} />
+        <CurhatInfo totalKarma={totalKarma} {...props} />
         <CurhatCard {...props} className='flex-1' />
       </div>
     )

@@ -29,8 +29,8 @@ const CreateCurhat: NextApiHandler<CurhatCreateResponse> = async (req, res) => {
           }
         },
         mood: curhatDetails.mood,
-        content: curhatDetails.content,
-        attachment: curhatDetails.attachment
+        content: curhatDetails.content
+        // attachment: curhatDetails.attachment
       }
     })
 

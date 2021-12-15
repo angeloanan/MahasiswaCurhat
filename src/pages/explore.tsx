@@ -78,23 +78,25 @@ const ExplorePage: NextPage<ExplorePageProps> = ({ posts }) => {
   return (
     <>
       <NextSeo title='Explore' />
-      <div className='mx-8 my-8 lg:mx-20'>
+      <div className='my-8 mx-8 lg:mx-20'>
         <div className='text-2xl font-medium text-gray-700'>Showing all curhats</div>
 
-        <div className='grid justify-center grid-cols-3 gap-4'>
+        <div className='container grid grid-cols-1 gap-4 justify-center items-center mx-auto w-full lg:grid-cols-2'>
           {posts.map((post) => {
             return (
-              <NextLink href={`/curhat/${post.id}`} key={post.id} passHref>
-                <a className='max-w-prose'>
-                  <CurhatDisplay
-                    age={differenceInYears(new Date(), new Date(post.author.birthdate))}
-                    content={post.content}
-                    gender={post.author.gender}
-                    uni={post.author.universityName}
-                    className='mt-4 transition-transform transform hover:-translate-y-1'
-                  />
-                </a>
-              </NextLink>
+              <div key={post.id} className='flex justify-center w-full'>
+                <NextLink href={`/curhat/${post.id}`} passHref>
+                  <a className='w-full max-w-prose'>
+                    <CurhatDisplay
+                      age={differenceInYears(new Date(), new Date(post.author.birthdate))}
+                      content={post.content}
+                      gender={post.author.gender}
+                      uni={post.author.universityName}
+                      className='mt-4 hover:-translate-y-1'
+                    />
+                  </a>
+                </NextLink>
+              </div>
             )
           })}
         </div>

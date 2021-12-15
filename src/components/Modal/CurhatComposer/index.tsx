@@ -6,12 +6,14 @@ import MoodSelector from './MoodSelector'
 import LoadingIndicator from '../../Icon/LoadingIndicator'
 
 import { atom, useAtom } from 'jotai'
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog } from '@headlessui/react'
 import { useForm } from 'react-hook-form'
 import { PaperClipIcon } from '@heroicons/react/solid'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useRouter } from 'next/router'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { CurhatCreateResponse } from '../../../pages/api/curhat/create'
+import { CreateCurhatSchema } from '../../../schemas/Curhat'
 
 export const CurhatModalOpenAtom = atom(false)
 
@@ -30,7 +32,9 @@ function CurhatComposer() {
   const [isSending, setIsSending] = React.useState(false)
 
   const router = useRouter()
-  const { register, handleSubmit, reset } = useForm()
+  const { register, handleSubmit, reset } = useForm({
+    resolver: zodResolver(CreateCurhatSchema)
+  })
 
   const onCurhatSubmit = handleSubmit(async (data) => {
     setIsSending(true)
@@ -78,8 +82,8 @@ function CurhatComposer() {
           <Dialog.Overlay className='fixed inset-0 z-10 bg-black opacity-60' />
 
           {/* Trick here is to have z-index 0 on element */}
-          <div className='absolute inset-0 flex items-center justify-center'>
-            <div className='z-10 w-full max-w-xl p-3 bg-white border border-gray-300 rounded-lg focus-within:border-indigo-500'>
+          <div className='flex absolute inset-0 justify-center items-center'>
+            <div className='z-10 p-3 w-full max-w-xl bg-white rounded-lg border border-gray-300 focus-within:border-indigo-500'>
               <form onSubmit={onCurhatSubmit} className='flex flex-col gap-2'>
                 <label htmlFor='content' className='sr-only'>
                   Write your heartfelt confession...
@@ -88,18 +92,18 @@ function CurhatComposer() {
                   id='content'
                   placeholder='Write your heartfelt confession...'
                   defaultValue={''}
-                  className='block w-full h-32 p-0 placeholder-gray-500 border-0 resize-none focus:ring-0 sm:text-sm'
+                  className='block p-0 w-full h-32 placeholder-gray-500 border-0 resize-none focus:ring-0 sm:text-sm'
                   onKeyDown={onKeyDown}
                   {...register('content')}
                 />
-                <div className='relative flex justify-end'>
+                <div className='flex relative justify-end'>
                   <MoodSelector />
                 </div>
 
                 <hr />
                 {/* Bottom bar */}
                 <div className='flex justify-between'>
-                  <div className='flex items-center gap-2 italic text-gray-500 cursor-not-allowed hover:text-gray-600'>
+                  <div className='flex gap-2 items-center italic text-gray-500 cursor-not-allowed hover:text-gray-600'>
                     <PaperClipIcon className='w-5 h-5' /> Attach files
                   </div>
                   <button

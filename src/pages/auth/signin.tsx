@@ -39,7 +39,9 @@ const SignIn = ({ providers }: SignInPageProps) => {
         <div className='flex gap-4 mt-8 w-full'>
           <button
             className='inline-flex justify-center py-2 px-4 w-full text-sm font-medium text-gray-500 bg-white rounded-md border border-gray-300 shadow-sm hover:bg-gray-50'
-            onClick={() => signIn('google')}
+            onClick={() =>
+              signIn('google', { callbackUrl: 'https://curhat.space/api/auth/callback/google' })
+            }
           >
             <Google />
           </button>

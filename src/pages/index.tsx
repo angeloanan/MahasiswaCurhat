@@ -1,14 +1,10 @@
 import * as React from 'react'
 import Convo from '../public/convo.png'
 import NextImage from 'next/image'
-import NextLink from 'next/link'
 
 import type { NextPage } from 'next'
-import { useSession } from 'next-auth/react'
 
 const HomePage: NextPage = () => {
-  const { data, status } = useSession()
-
   return (
     <div className='flex flex-col-reverse min-h-screen lg:flex-row'>
       <div className='relative flex-auto flex-shrink brightness-75'>

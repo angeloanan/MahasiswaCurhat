@@ -80,21 +80,30 @@ export const CurhatCommentForm = ({ replyTo }: CommentFormProps) => {
         {errors.content && <div className='text-red-600'>* {errors.content.message}</div>}
 
         <div className='relative'>
-          <Button
-            className={`relative sm:absolute flex gap-2 right-0 bottom-0 ${
-              isSubmit ? 'cursor-wait' : null
-            }`}
-            type='submit'
-          >
-            {isSubmit ? (
-              <>
-                <LoadingIndicator />
-                <span>Submitting...</span>
-              </>
-            ) : (
-              'Comment'
-            )}
-          </Button>
+          {status != 'authenticated' ? (
+            <Button
+              className='flex relative right-0 bottom-0 gap-2 bg-gray-700 cursor-not-allowed hover:bg-gray-700 sm:absolute'
+              type='reset'
+            >
+              You must login before commenting!
+            </Button>
+          ) : (
+            <Button
+              className={`relative sm:absolute flex gap-2 right-0 bottom-0 ${
+                isSubmit ? 'cursor-wait' : null
+              }`}
+              type='submit'
+            >
+              {isSubmit ? (
+                <>
+                  <LoadingIndicator />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                'Comment'
+              )}
+            </Button>
+          )}
         </div>
       </form>
     </div>

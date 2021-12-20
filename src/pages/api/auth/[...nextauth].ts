@@ -64,6 +64,9 @@ export default NextAuth({
       session.user.username = userObject?.username as string | undefined
 
       return session
+    },
+    async redirect({ baseUrl }) {
+      return baseUrl
     }
   },
 

@@ -11,9 +11,8 @@ import { differenceInYears } from 'date-fns'
 import { prisma } from '../../lib/prisma'
 import { useRouter } from 'next/router'
 
-import { CurhatCommentForm } from '../../components/CurhatComment'
+import { CurhatCommentForm, CurhatCommentDisplay } from '../../components/CurhatComment'
 import useSWR, { SWRConfig } from 'swr'
-import { CurhatCommentDisplay } from '../../components/CurhatComment/display'
 
 interface CurhatPageQuery extends NodeJS.Dict<string> {
   id: string
@@ -169,6 +168,7 @@ const CurhatPage: NextPage<CurhatPageProps> = ({ curhatId, curhatData, fallback 
         <div className='py-12 mx-8 lg:mx-20'>
           <CurhatDisplay
             withInfo
+            curhatId={curhatData.id}
             gender={curhatData.author.gender}
             uni={curhatData.author.universityName}
             age={differenceInYears(new Date(), new Date(curhatData.author.birthdate))}

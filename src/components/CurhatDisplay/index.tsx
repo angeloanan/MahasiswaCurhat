@@ -8,6 +8,7 @@ type CurhatDisplayProps =
   | {
       withInfo?: false
 
+      curhatId: string
       content: string
       gender: SexualityPronouns
       age: number
@@ -16,6 +17,7 @@ type CurhatDisplayProps =
   | {
       withInfo: true
 
+      curhatId: string
       content: string
       gender: SexualityPronouns
       age: number

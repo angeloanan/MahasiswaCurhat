@@ -3,8 +3,19 @@ import Convo from '../public/convo.png'
 import NextImage from 'next/image'
 
 import type { NextPage } from 'next'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 const HomePage: NextPage = () => {
+  const { data } = useSession()
+  const router = useRouter()
+  React.useEffect(() => {
+    if (data != null) {
+      if (data.user.username == null) router.replace('/auth/newuser')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
+
   return (
     <div className='flex flex-col-reverse min-h-screen lg:flex-row'>
       <div className='relative flex-auto flex-shrink brightness-75'>

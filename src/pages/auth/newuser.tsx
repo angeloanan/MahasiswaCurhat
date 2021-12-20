@@ -8,12 +8,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { NewUserFormSchema, SexualityPronouns } from '../../schemas/NewUserForm'
 import { RadioGroup } from '@headlessui/react'
-import DatePicker from 'react-datepicker'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import { isUsernameAvailableResponse } from '../api/user/[username]/available'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
+
 function NewUserPage() {
   const router = useRouter()
   const { status, data } = useSession({
@@ -26,11 +26,10 @@ function NewUserPage() {
     fetcher
   )
   const UniversitiesOptions = React.useMemo(() => {
-    return universitiesList?.map((u) => {
-      return { label: u, value: u }
-    })
+    return universitiesList?.map((u) => ({ label: u, value: u }))
   }, [universitiesList])
 
+  // Handle already registered user
   React.useEffect(() => {
     if (status === 'authenticated' && data?.user.username != null) {
       router.replace('/')
@@ -48,7 +47,6 @@ function NewUserPage() {
     clearErrors,
     formState: { errors }
   } = useForm<z.infer<typeof NewUserFormSchema>>({
-    // https://github.com/react-hook-form/resolvers/issues/271
     resolver: zodResolver(NewUserFormSchema)
   })
 
@@ -70,12 +68,13 @@ function NewUserPage() {
     validateUsername()
   }, [clearErrors, setError, watchUsername])
 
-  console.group('Page re-render')
-  console.log('Universities:', universitiesList)
-  console.log('Form inputs:', getValues())
-  universityError && console.error('Universities error:', universityError)
-  Object.keys(errors).length >= 1 && console.warn('Form errors:', errors)
-  console.groupEnd()
+  // Console logs
+  // console.group('Page re-render')
+  // console.log('Universities:', universitiesList)
+  // console.log('Form inputs:', getValues())
+  // universityError && console.error('Universities error:', universityError)
+  // Object.keys(errors).length >= 1 && console.warn('Form errors:', errors)
+  // console.groupEnd()
 
   const onFormSubmit = handleSubmit(async (data) => {
     try {
@@ -102,7 +101,7 @@ function NewUserPage() {
   })
 
   return (
-    <div className='flex flex-col max-w-screen-lg min-h-screen p-8 mx-auto'>
+    <div className='flex flex-col p-8 mx-auto max-w-screen-lg min-h-screen'>
       {/* Title thing */}
       <div className=''>
         <h1 className='text-lg font-medium leading-6 text-gray-900'>Welcome to Mahasiswa Curhat</h1>
@@ -113,7 +112,7 @@ function NewUserPage() {
 
       {/* Start form */}
       <form
-        className='grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6'
+        className='grid grid-cols-1 gap-x-4 gap-y-6 mt-6 sm:grid-cols-6 focus:ring-indigo-500 focus:border-indigo-500'
         onSubmit={onFormSubmit}
       >
         <div className='sm:col-span-4'>
@@ -121,12 +120,12 @@ function NewUserPage() {
             Username <span className='text-red-500'>*</span>
           </label>
           <div className='flex mt-1 rounded-md shadow-sm'>
-            <span className='inline-flex items-center px-3 text-gray-500 border border-r-0 border-gray-300 rounded-l-md bg-gray-50 sm:text-sm'>
+            <span className='inline-flex items-center px-3 text-gray-500 bg-gray-50 rounded-l-md border border-r-0 border-gray-300 sm:text-sm'>
               mahasiswacurhat.com/user/
             </span>
             <input
               type='text'
-              className='flex-1 block w-full min-w-0 border-gray-300 rounded-none focus:ring-indigo-500 focus:border-indigo-500 rounded-r-md sm:text-sm'
+              className='block flex-1 w-full min-w-0 rounded-none rounded-r-md border-gray-300 sm:text-sm'
               {...register('username', {
                 required: { value: true, message: 'You must select your username' }
               })}
@@ -142,41 +141,12 @@ function NewUserPage() {
           <label htmlFor='birthdate' className='block text-sm font-medium text-gray-700'>
             Date of birth
           </label>
-          <Controller
-            name='birthdate'
-            control={control}
-            render={({ field: { onChange } }) => (
-              <DatePicker
-                selected={new Date(getValues('birthdate') ?? null)}
-                className='w-full border-gray-300 rounded'
-                onChange={(e: Date) => {
-                  onChange(e)
-                  setValue('birthdate', e.toISOString())
-                }}
-              />
-            )}
+          <input
+            type='date'
+            className='text-gray-500 rounded border-gray-300'
+            {...register('birthdate')}
           />
         </div>
-
-        {/* TODO: Implement profile pictures */}
-        {/* <div className='sm:col-span-4'>
-          <label
-            htmlFor='photo'
-            className='grid grid-cols-1 mt-6 text-sm font-medium text-gray-700 gap-y-6 gap-x-4 sm:grid-cols-6'
-          >
-            Photo
-          </label>
-          <div>
-            <span>Image</span>
-            <button
-              type='button'
-              className='px-3 py-2 ml-5 text-sm font-medium leading-4 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-            >
-              Change
-              <input type='file' className='sr-only' name='photo' />
-            </button>
-          </div>
-        </div> */}
 
         {/* Gender */}
         <div className='sm:col-span-4'>
@@ -241,6 +211,7 @@ function NewUserPage() {
                 isLoading={!universitiesList}
                 placeholder='Universitas bawah pohon bambu...'
                 className='mt-1'
+                formatCreateLabel={(v) => `Register new university: ${v}`}
                 onChange={(v) => {
                   console.log('React select change', v)
                   if (v != null) {

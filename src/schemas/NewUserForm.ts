@@ -1,3 +1,4 @@
+import { parseISO } from 'date-fns'
 import * as z from 'zod'
 
 // TODO: Use Prisma's built in enum
@@ -15,6 +16,6 @@ export const NewUserFormSchema = z.object({
   photo: z.string().url().optional(),
   gender: SexualityPronouns,
   // Support for Date is in RFC, https://github.com/colinhacks/zod/issues/126
-  birthdate: z.string(),
+  birthdate: z.string().transform((v) => parseISO(v)),
   university: z.string().min(3)
 })

@@ -88,6 +88,8 @@ const ExplorePage: NextPage<ExplorePageProps> = ({ posts }) => {
                 <NextLink href={`/curhat/${post.id}`} passHref>
                   <a className='w-full max-w-prose'>
                     <CurhatDisplay
+                      curhatId={post.id}
+                      totalKarma={post._count.upvote - post._count.downvote}
                       age={differenceInYears(new Date(), new Date(post.author.birthdate))}
                       content={post.content}
                       gender={post.author.gender}

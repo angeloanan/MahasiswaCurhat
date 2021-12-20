@@ -80,12 +80,12 @@ export const CurhatCommentForm = ({ replyTo }: CommentFormProps) => {
         {errors.content && <div className='text-red-600'>* {errors.content.message}</div>}
 
         <div className='relative'>
-          {status != 'authenticated' ? (
+          {status != 'authenticated' || data?.user.username == null ? (
             <Button
               className='flex relative right-0 bottom-0 gap-2 bg-gray-700 cursor-not-allowed hover:bg-gray-700 sm:absolute'
               type='reset'
             >
-              You must login before commenting!
+              You must login first!
             </Button>
           ) : (
             <Button

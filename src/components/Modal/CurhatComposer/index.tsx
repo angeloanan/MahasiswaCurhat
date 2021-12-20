@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CurhatCreateResponse } from '../../../pages/api/curhat/create'
 import { CreateCurhatSchema } from '../../../schemas/Curhat'
+import { useSession } from 'next-auth/react'
 
 export const CurhatModalOpenAtom = atom(false)
 
@@ -28,17 +29,25 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 }
 
 function CurhatComposer() {
+  const router = useRouter()
+  const { data: sessionData } = useSession()
+
   const [isOpen, setIsOpen] = useAtom(CurhatModalOpenAtom)
   const [isSending, setIsSending] = React.useState(false)
 
-  const router = useRouter()
-  const { register, handleSubmit, reset } = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
     resolver: zodResolver(CreateCurhatSchema)
   })
 
   const onCurhatSubmit = handleSubmit(async (data) => {
-    setIsSending(true)
+    if (sessionData?.user.username == null) return router.replace('/auth/newuser')
 
+    setIsSending(true)
     // TODO: Error handling
 
     const request = await fetch('/api/curhat/create', {
@@ -96,7 +105,10 @@ function CurhatComposer() {
                   onKeyDown={onKeyDown}
                   {...register('content')}
                 />
-                <div className='flex relative justify-end'>
+                <div className='flex relative justify-between'>
+                  <div className='flex items-end text-sm text-red-500'>
+                    {errors.content && `* ${errors.content.message}`}
+                  </div>
                   <MoodSelector />
                 </div>
 

@@ -3,12 +3,12 @@ import '@fontsource/inter/variable.css'
 import 'tailwindcss/tailwind.css'
 import './styles.css'
 import SEO from '../../next-seo.config'
+import Script from 'next/script'
 
-import { DefaultSeo } from 'next-seo'
 import type { AppProps } from 'next/app'
 import type { Session } from 'next-auth'
-import { NextPage } from 'next'
-import Head from 'next/head'
+import type { NextPage } from 'next'
+import { DefaultSeo } from 'next-seo'
 import { SessionProvider } from 'next-auth/react'
 import Navbar from '../components/Navbar'
 import CurhatComposer from '../components/Modal/CurhatComposer'
@@ -31,16 +31,17 @@ function CustomApp({ Component, pageProps: { session, ...pageProps } }: CustomAp
         <Component {...pageProps} />
       ) : (
         <>
-          <Head>
-            <meta
-              name='google-site-verification'
-              content='6hRj86Hx02xLCsII57JKBQfSui5rHpi9mpF_8DLhDm4'
-            />
-          </Head>
           <DefaultSeo {...SEO} />
-          <CurhatComposer />
-          <Navbar />
+          <Script
+            strategy='afterInteractive'
+            src='https://static.cloudflareinsights.com/beacon.min.js'
+            data-cf-beacon='{"token": "138785c1db39462081dcd5577c881c2c"}'
+          />
 
+          {/* Modal store */}
+          <CurhatComposer />
+
+          <Navbar />
           <main>
             <Component {...pageProps} />
           </main>

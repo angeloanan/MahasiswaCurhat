@@ -1,28 +1,20 @@
-import type { GetServerSideProps } from 'next'
+import * as React from 'react'
 
 import { Twitter, Google, Facebook } from '@icons-pack/react-simple-icons'
-import { BuiltInProviderType } from 'next-auth/providers'
-import { ClientSafeProvider, getProviders, LiteralUnion, signIn, useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import type { NextPageWithDisableLayout } from '../_app'
 
-interface SignInPageProps {
-  providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const providers = await getProviders()
-  return {
-    props: { providers }
-  }
-}
-
-const SignIn = ({ providers }: SignInPageProps) => {
-  const { status } = useSession()
+const SignIn: NextPageWithDisableLayout = () => {
   const router = useRouter()
+  const { status } = useSession()
 
-  if (status === 'authenticated') {
-    return router.push('/')
-  }
+  React.useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
 
   return (
     <div className='flex flex-col justify-center items-center min-h-screen bg-gray-50'>

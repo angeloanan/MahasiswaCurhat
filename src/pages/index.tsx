@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Convo from '../public/convo.png'
+import Convo from '../../public/convo.png'
 import NextImage from 'next/image'
 
 import type { NextPage } from 'next'

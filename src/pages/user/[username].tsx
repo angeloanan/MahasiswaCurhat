@@ -5,7 +5,7 @@ import type { SexualityPronouns } from '.prisma/client'
 
 import Image from 'next/image'
 import NextLink from 'next/link'
-import ProfileBG from '../../public/profilebg.jpeg'
+import ProfileBG from '../../../public/profilebg.jpeg'
 
 import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'

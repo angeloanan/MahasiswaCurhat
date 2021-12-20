@@ -1,5 +1,4 @@
 {
-  "private": "true",
   "dependencies": {
     "@fontsource/inter": "^4.5.1",
     "@headlessui/react": "^1.4.2",
@@ -40,11 +39,9 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
-    
     "vercel-build": "npm run prisma:generate && npm run prisma:migrate && next build",
     "prisma:generate": "PRISMA_CLIENT_ENGINE_TYPE='dataproxy' prisma generate",
     "prisma:migrate": "DATABASE_URL=\"$MIGRATE_DATABASE_URL\" prisma migrate deploy",
-    
     "migrate": "prisma migrate",
     "prepare": "husky install",
     "format": "eslint --fix && prettier --write src"

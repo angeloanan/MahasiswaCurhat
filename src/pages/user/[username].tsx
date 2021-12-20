@@ -11,6 +11,7 @@ import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'
 import { prisma } from '../../lib/prisma'
 import { differenceInYears, formatDistance } from 'date-fns'
+import Button from '../../components/UI/Button'
 
 interface UserPageProps {
   data: {
@@ -44,66 +45,81 @@ export const getStaticProps: GetStaticProps<UserPageProps, { username: string }>
 ) => {
   const username = context.params?.username
   if (username == null) return { notFound: true, revalidate: 60 }
+  if (username === 'null')
+    return {
+      // redirect: { destination: '/auth/newuser', permanent: 'false' },
+      notFound: true
+    }
 
-  const userDetails = await prisma.user.findMany({
-    where: { username: { equals: username, mode: 'insensitive' } },
-    select: {
-      id: true,
-      username: true,
-      gender: true,
-      universityName: true,
-      birthdate: true,
-      registeredAt: true,
-      _count: {
-        select: {
-          posts: true,
-          comments: true
+  try {
+    const userDetails = await prisma.user.findMany({
+      where: { username: { equals: username, mode: 'insensitive' } },
+      select: {
+        id: true,
+        username: true,
+        gender: true,
+        universityName: true,
+        birthdate: true,
+        registeredAt: true,
+        _count: {
+          select: {
+            posts: true,
+            comments: true
+          }
         }
       }
-    }
-  })
+    })
+    if (userDetails == null) return { notFound: true, revalidate: 300 }
 
-  const userPostKarmaAggregate = await prisma.post.findMany({
-    where: {
-      author: { username: { equals: username, mode: 'insensitive' } }
-    },
-    select: {
-      _count: {
-        select: { upvote: true, downvote: true }
+    let userPostKarmaTotal = 0
+    let userPostCommentKarmaTotal = 0
+    await Promise.all([
+      async () => {
+        const userPostKarmaAggregate = await prisma.post.findMany({
+          where: {
+            author: { username: { equals: username, mode: 'insensitive' } }
+          },
+          select: {
+            _count: {
+              select: { upvote: true, downvote: true }
+            }
+          }
+        })
+        userPostKarmaAggregate.forEach(
+          (post) => (userPostKarmaTotal += post._count.upvote - post._count.downvote)
+        )
+      },
+      async () => {
+        const userPostCommentKarmaAggregate = await prisma.comment.findMany({
+          where: {
+            author: { username: { equals: username, mode: 'insensitive' } }
+          },
+          select: {
+            _count: {
+              select: {
+                lovedBy: true
+              }
+            }
+          }
+        })
+
+        userPostCommentKarmaAggregate.forEach(
+          (c) => (userPostCommentKarmaTotal += c._count.lovedBy)
+        )
       }
+    ])
+
+    return {
+      props: {
+        data: JSON.parse(JSON.stringify(userDetails[0])),
+        totalPostKarma: userPostKarmaTotal,
+        totalCommentKarma: userPostCommentKarmaTotal
+      },
+      revalidate: 300
     }
-  })
-
-  const userPostCommentKarmaAggregate = await prisma.comment.findMany({
-    where: {
-      author: { username: { equals: username, mode: 'insensitive' } }
-    },
-    select: {
-      _count: {
-        select: {
-          lovedBy: true
-        }
-      }
-    }
-  })
-
-  let userPostKarmaTotal = 0
-  userPostKarmaAggregate.forEach(
-    (post) => (userPostKarmaTotal += post._count.upvote - post._count.downvote)
-  )
-
-  let userPostCommentKarmaTotal = 0
-  userPostCommentKarmaAggregate.forEach((c) => (userPostCommentKarmaTotal += c._count.lovedBy))
-
-  if (userDetails == null) return { notFound: true, revalidate: 60 }
-
-  return {
-    props: {
-      data: JSON.parse(JSON.stringify(userDetails[0])),
-      totalPostKarma: userPostKarmaTotal,
-      totalCommentKarma: userPostCommentKarmaTotal
-    },
-    revalidate: 300
+  } catch (e) {
+    console.error(e)
+    return { notFound: true, revalidate: 300 }
   }
 }
 
@@ -131,29 +147,42 @@ const UserPage: NextPage<UserPageProps> = (props) => {
           className='select-none !brightness-[30%]'
           alt=''
         />
-        <div className='flex relative items-center w-full max-w-6xl h-32 rounded'>
-          <div className='relative mr-9 w-32 h-32'>
-            <Image
-              src={userPfp}
-              layout='fill'
-              className='rounded-full'
-              alt={`${props.data.username}'s profile picture`}
-            />
-          </div>
-          <div className='flex flex-col justify-around h-full font-medium text-gray-300'>
-            <div className='text-lg'>
-              <div className='text-3xl font-bold text-gray-100'>{props.data.username}</div>
-              <div>{props.data.universityName} Student</div>
-              <div>
-                {props.data.gender === 'MALE' ? 'Male' : 'Female'},{' '}
-                {differenceInYears(new Date(), new Date(props.data.birthdate as string))} years old
+        <div className='flex relative flex-col content-between w-full max-w-6xl sm:flex-row'>
+          {/* Left side */}
+          <div className='flex relative flex-1 items-center w-full h-32'>
+            <div className='relative mr-9 w-32 h-32'>
+              <Image
+                src={userPfp}
+                layout='fill'
+                className='rounded-full'
+                alt={`${props.data.username}'s profile picture`}
+              />
+            </div>
+            <div className='flex flex-col justify-around h-full font-medium text-gray-300'>
+              <div className='text-lg'>
+                <div className='text-3xl font-bold text-gray-100'>{props.data.username}</div>
+                <div>{props.data.universityName} Student</div>
+                <div>
+                  {props.data.gender === 'MALE' ? 'Male' : 'Female'},{' '}
+                  {differenceInYears(new Date(), new Date(props.data.birthdate as string))} years
+                  old
+                </div>
+              </div>
+              <div className='text-sm'>
+                Joined {formatDistance(new Date(props.data.registeredAt), new Date())} ago
               </div>
             </div>
-            <div className='text-sm'>
-              Joined {formatDistance(new Date(props.data.registeredAt), new Date())} ago
+          </div>
+          {/* Right side */}
+          <div className='flex flex-col items-end pt-4 pb-2 w-full sm:w-auto'>
+            <div>
+              <NextLink href='/auth/signout'>
+                <a>
+                  <Button>Log out</Button>
+                </a>
+              </NextLink>
             </div>
           </div>
-          <div></div>
         </div>
       </div>
 

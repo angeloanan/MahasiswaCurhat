@@ -133,8 +133,6 @@ const CurhatCommentLayout = ({ curhatId }: CurhatCommentLayoutProps) => {
     fetcher
   )
 
-  console.log(commentData)
-
   if (!commentData) return <div>Loading comments...</div>
 
   return (

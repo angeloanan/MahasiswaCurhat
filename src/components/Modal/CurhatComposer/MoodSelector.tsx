@@ -15,7 +15,6 @@ const moods: Mood[] = [
 
 function MoodSelector() {
   const [selectedMood, setSelectedMood] = React.useState<Mood | null>(null)
-  console.log(selectedMood)
 
   return (
     <Listbox value={selectedMood} onChange={setSelectedMood}>

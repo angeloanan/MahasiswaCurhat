@@ -143,8 +143,9 @@ const CurhatCommentLayout = ({ curhatId }: CurhatCommentLayoutProps) => {
       {commentData?.map((comment) => (
         <CurhatCommentDisplay
           key={comment.id}
-          timestamp={comment.timestamp}
           curhatId={curhatId}
+          commentId={comment.id}
+          timestamp={comment.timestamp}
           authorUsername={comment.author.username}
           authorUserid={comment.author.id}
           content={comment.content}

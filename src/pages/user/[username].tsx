@@ -8,6 +8,7 @@ import NextLink from 'next/link'
 import ProfileBG from '../../../public/profilebg.jpeg'
 
 import { NextSeo } from 'next-seo'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { prisma } from '../../lib/prisma'
 import { differenceInYears, formatDistance } from 'date-fns'
@@ -125,17 +126,16 @@ export const getStaticProps: GetStaticProps<UserPageProps, { username: string }>
 
 const UserPage: NextPage<UserPageProps> = (props) => {
   const router = useRouter()
+  const { status, data: sessionData } = useSession()
 
   const userPfp = `https://source.boringavatars.com/beam/256/${encodeURIComponent(
     router.isFallback ? 'null' : (props.data.id as string)
   )}}`
 
   // This is only shown when still doing data fetching
-  if (router.isFallback) return <div className='mx-auto'>Loading...</div>
-
   return (
     <>
-      <NextSeo title={`${props.data.username}'s Profile`} />
+      <NextSeo title={router.isFallback ? undefined : `${props.data.username}'s Profile`} />
 
       <div className='flex relative justify-center items-center p-6 h-64 sm:p-12 bg-slate-800'>
         <Image
@@ -151,50 +151,77 @@ const UserPage: NextPage<UserPageProps> = (props) => {
           {/* Left side */}
           <div className='flex relative flex-1 items-center w-full h-32'>
             <div className='relative mr-9 w-32 h-32'>
-              <Image
-                src={userPfp}
-                layout='fill'
-                className='rounded-full'
-                alt={`${props.data.username}'s profile picture`}
-              />
+              {router.isFallback ? (
+                <div className='absolute w-full h-full bg-gray-500 rounded-full animate-pulse' />
+              ) : (
+                <Image
+                  src={userPfp}
+                  layout='fill'
+                  className='rounded-full'
+                  alt={`${props.data.username}'s profile picture`}
+                />
+              )}
             </div>
             <div className='flex flex-col justify-around h-full font-medium text-gray-300'>
-              <div className='text-lg'>
-                <div className='text-3xl font-bold text-gray-100'>{props.data.username}</div>
-                <div>{props.data.universityName} Student</div>
-                <div>
-                  {props.data.gender === 'MALE' ? 'Male' : 'Female'},{' '}
-                  {differenceInYears(new Date(), new Date(props.data.birthdate as string))} years
-                  old
-                </div>
-              </div>
-              <div className='text-sm'>
-                Joined {formatDistance(new Date(props.data.registeredAt), new Date())} ago
-              </div>
+              {router.isFallback ? (
+                <>
+                  <div>
+                    <div className='w-32 h-8 bg-gray-500 rounded animate-pulse'></div>
+                    <div className='mt-2 w-72 h-6 bg-gray-500 rounded animate-pulse' />
+                    <div className='mt-2 w-56 h-6 bg-gray-500 rounded animate-pulse' />
+                  </div>
+                  <div className='mt-2 w-48 h-4 bg-gray-500 rounded animate-pulse' />
+                </>
+              ) : (
+                <>
+                  <div className='text-lg'>
+                    <div className='text-3xl font-bold text-gray-100'>{props.data.username}</div>
+                    <div>{props.data.universityName} Student</div>
+                    <div>
+                      {props.data.gender === 'MALE' ? 'Male' : 'Female'},{' '}
+                      {differenceInYears(new Date(), new Date(props.data.birthdate as string))}{' '}
+                      years old
+                    </div>
+                  </div>
+                  <div className='text-sm'>
+                    Joined {formatDistance(new Date(props.data.registeredAt), new Date())} ago
+                  </div>
+                </>
+              )}
             </div>
           </div>
+
           {/* Right side */}
           <div className='flex flex-col items-end pt-4 pb-2 w-full sm:w-auto'>
-            <div>
-              <NextLink href='/auth/signout'>
-                <a>
-                  <Button>Log out</Button>
-                </a>
-              </NextLink>
-            </div>
+            {/* Only show logout button if on self userpage */}
+            {!router.isFallback &&
+              status === 'authenticated' &&
+              sessionData?.user.username === props.data.username && (
+                <div>
+                  <NextLink href='/auth/signout'>
+                    <a>
+                      <Button>Log out</Button>
+                    </a>
+                  </NextLink>
+                </div>
+              )}
           </div>
         </div>
       </div>
 
       <div className='px-4'>
-        <div className='mx-auto mt-8 w-full max-w-prose'>
-          This user has posted {props.data._count.posts} curhats with a total karma of{' '}
-          {props.totalPostKarma} points.
-        </div>
-        <div className='mx-auto mt-2 w-full max-w-prose'>
-          In addition, they have commented {props.data._count.comments} times which accumulated{' '}
-          {props.totalCommentKarma} hearts!
-        </div>
+        {router.isFallback ? null : (
+          <>
+            <div className='mx-auto mt-8 w-full max-w-prose'>
+              This user has posted {props.data._count.posts} curhats with a total karma of{' '}
+              {props.totalPostKarma} points.
+            </div>
+            <div className='mx-auto mt-2 w-full max-w-prose'>
+              In addition, they have commented {props.data._count.comments} times which accumulated{' '}
+              {props.totalCommentKarma} hearts!
+            </div>
+          </>
+        )}
       </div>
     </>
   )

@@ -31,7 +31,7 @@ enum SexualityPronouns {
 model Post {
   id         String @id @unique @default(cuid())
   authorId   String
-  author     User   @relation("userPosts", fields: [authorId], references: [id])
+  author     User   @relation("userPosts", fields: [authorId], references: [id], onDelete: SetNull)
   content    String
   mood       Mood?
   attachment Bytes?
@@ -66,6 +66,10 @@ model User {
   comments      Comment[] @relation("userPostComments")
   commentLoves  Comment[] @relation("commentLoves")
 
+  // Notifications
+  allowEmailNotification Boolean               @default(true)
+  commentNotification    CommentNotification[] @relation("userCommentNotifications")
+
   postReports   PostReport[]
   commentReport CommentReport[]
 }
@@ -81,19 +85,38 @@ model Comment {
 
   // All comments must have a parent post
   parentPostId String @map("postId")
-  parentPost   Post   @relation("postComments", fields: [parentPostId], references: [id])
+  parentPost   Post   @relation("postComments", fields: [parentPostId], references: [id], onDelete: Cascade)
   authorId     String
-  author       User   @relation("userPostComments", fields: [authorId], references: [id])
+  author       User   @relation("userPostComments", fields: [authorId], references: [id], onDelete: SetNull)
 
   content   String
   timestamp DateTime @default(now())
   lovedBy   User[]   @relation("commentLoves", references: [id])
 
   // If recursive comments
-  parentCommentId  String?         @map("commentId")
-  parentComment    Comment?        @relation("commentTree", fields: [parentCommentId], references: [id])
-  childrenComments Comment[]       @relation("commentTree")
-  commentReport    CommentReport[]
+  parentCommentId  String?   @map("commentId")
+  parentComment    Comment?  @relation("commentTree", fields: [parentCommentId], references: [id])
+  childrenComments Comment[] @relation("commentTree")
+
+  commentReport       CommentReport[]
+  commentNotification CommentNotification[] @relation("commentNotification")
+}
+
+// ---
+
+model CommentNotification {
+  id String @id @default(cuid())
+
+  recepientId String
+  recepient   User   @relation("userCommentNotifications", fields: [recepientId], references: [id], onDelete: Cascade)
+
+  commentId String
+  comment   Comment @relation("commentNotification", fields: [commentId], references: [id], onDelete: Cascade)
+
+  isRead    Boolean  @default(false)
+  timestamp DateTime @default(now())
+
+  content String
 }
 
 // ---
@@ -102,20 +125,20 @@ model PostReport {
   id String @id @default(cuid())
 
   postId String
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  reporterId String @map("userId")
-  reporter   User   @relation(fields: [reporterId], references: [id])
+  reporterId String
+  reporter   User   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
 }
 
 model CommentReport {
   id String @id @default(cuid())
 
   commentId String
-  comment   Comment @relation(fields: [commentId], references: [id])
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
-  reporterId String @map("userId")
-  reporter   User   @relation(fields: [reporterId], references: [id])
+  reporterId String
+  reporter   User   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
 }
 
 // --- NextAuth Below

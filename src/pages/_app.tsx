@@ -1,9 +1,12 @@
+import * as React from 'react'
+
 import '../lib/why-did-you-render'
 import '@fontsource/inter/variable.css'
 import 'tailwindcss/tailwind.css'
 import './styles.css'
 import SEO from '../../next-seo.config'
 import Script from 'next/script'
+import { GoogleAnalytics } from '../lib/gtag'
 
 import type { AppProps } from 'next/app'
 import type { Session } from 'next-auth'
@@ -32,6 +35,8 @@ function CustomApp({ Component, pageProps: { session, ...pageProps } }: CustomAp
       ) : (
         <>
           <DefaultSeo {...SEO} />
+          <GoogleAnalytics />
+          {/* Cloudflare Analytics */}
           <Script
             strategy='afterInteractive'
             src='https://static.cloudflareinsights.com/beacon.min.js'

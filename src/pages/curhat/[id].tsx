@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import CurhatDisplay from '../../components/CurhatDisplay'
+import CurhatDisplay from '@components/CurhatDisplay'
 
 import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import type { Merge } from 'type-fest'
@@ -8,10 +8,10 @@ import type { Post, SexualityPronouns } from '.prisma/client'
 
 import { NextSeo } from 'next-seo'
 import { differenceInYears } from 'date-fns'
-import { prisma } from '../../lib/prisma'
+import { prisma } from '@lib/prisma'
 import { useRouter } from 'next/router'
 
-import { CurhatCommentForm, CurhatCommentDisplay } from '../../components/CurhatComment'
+import { CurhatCommentForm, CurhatCommentDisplay } from '@components/CurhatComment'
 import useSWR, { SWRConfig } from 'swr'
 
 interface CurhatPageQuery extends NodeJS.Dict<string> {

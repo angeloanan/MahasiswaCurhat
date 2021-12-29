@@ -1,7 +1,7 @@
 import { NextApiHandler } from 'next'
 import { getSession } from 'next-auth/react'
-import { prisma } from '../../../../lib/prisma'
-import nc from '../../../../lib/next-connect'
+import { prisma } from '@lib/prisma'
+import nc from '@lib/next-connect'
 
 export type AVAILABILITY = 'AVAILABLE' | 'UNAVAILABLE'
 export type isUsernameAvailableResponse =

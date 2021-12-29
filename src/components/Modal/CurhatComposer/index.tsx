@@ -3,7 +3,7 @@ import * as React from 'react'
 import type { FallbackProps } from 'react-error-boundary'
 
 import MoodSelector from './MoodSelector'
-import LoadingIndicator from '../../Icon/LoadingIndicator'
+import LoadingIndicator from '@components/Icon/LoadingIndicator'
 
 import { atom, useAtom } from 'jotai'
 import { Dialog } from '@headlessui/react'
@@ -12,8 +12,8 @@ import { PaperClipIcon } from '@heroicons/react/solid'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useRouter } from 'next/router'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CurhatCreateResponse } from '../../../pages/api/curhat/create'
-import { CreateCurhatSchema } from '../../../schemas/Curhat'
+import { CurhatCreateResponse } from '@api/curhat/create'
+import { CreateCurhatSchema } from '@schema/Curhat'
 import { useSession } from 'next-auth/react'
 
 export const CurhatModalOpenAtom = atom(false)

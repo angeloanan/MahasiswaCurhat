@@ -1,6 +1,6 @@
 import type { NextApiHandler } from 'next'
 
-import { prisma } from '../../../../lib/prisma'
+import { prisma } from '@lib/prisma'
 import { getSession } from 'next-auth/react'
 
 export type FetchCurhatCommentLovedResponse =

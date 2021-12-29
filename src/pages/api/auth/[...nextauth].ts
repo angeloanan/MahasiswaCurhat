@@ -1,10 +1,10 @@
-import NextAuth, { Session, User } from 'next-auth'
+import NextAuth from 'next-auth'
 import FacebookProvider from 'next-auth/providers/facebook'
 import TwitterProvider from 'next-auth/providers/twitter'
 import GoogleProvider from 'next-auth/providers/google'
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import { prisma } from '../../../lib/prisma'
+import { prisma } from '@lib/prisma'
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -48,7 +48,8 @@ export default NextAuth({
   pages: {
     signIn: '/auth/signin',
     newUser: '/auth/newuser',
-    signOut: '/auth/signout'
+    signOut: '/auth/signout',
+    error: '/auth/error'
   },
 
   secret: process.env.NEXTAUTH_SECRET,

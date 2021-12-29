@@ -1,14 +1,14 @@
 import * as React from 'react'
 import NextImage from 'next/image'
 import { useRouter } from 'next/router'
-import Button from '../UI/Button'
+import Button from '@components/UI/Button'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
-import { CreateCurhatCommentSchema } from '../../schemas/CurhatComment'
+import { CreateCurhatCommentSchema } from '@schema/CurhatComment'
 import { useState } from 'react'
-import LoadingIndicator from '../Icon/LoadingIndicator'
+import LoadingIndicator from '@components/Icon/LoadingIndicator'
 
 interface CommentFormProps {
   replyTo: string

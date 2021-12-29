@@ -1,8 +1,8 @@
 import type { NextApiHandler } from 'next'
 import { getSession } from 'next-auth/react'
 
-import nc from '../../../../lib/next-connect'
-import { prisma } from '../../../../lib/prisma'
+import nc from '@lib/next-connect'
+import { prisma } from '@lib/prisma'
 
 const deleteComment: NextApiHandler = async (req, res) => {
   const commentId = req.query.id as string

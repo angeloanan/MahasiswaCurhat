@@ -5,14 +5,14 @@ import type { SexualityPronouns } from '.prisma/client'
 
 import Image from 'next/image'
 import NextLink from 'next/link'
-import ProfileBG from '../../../public/profilebg.jpeg'
+import ProfileBG from '@public/profilebg.jpeg'
 
 import { NextSeo } from 'next-seo'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { prisma } from '../../lib/prisma'
+import { prisma } from '@lib/prisma'
 import { differenceInYears, formatDistance } from 'date-fns'
-import Button from '../../components/UI/Button'
+import Button from '@components/UI/Button'
 
 interface UserPageProps {
   data: {

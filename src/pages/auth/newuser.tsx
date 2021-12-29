@@ -6,11 +6,11 @@ import CreatableSelect from 'react-select/creatable'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { NewUserFormSchema, SexualityPronouns } from '../../schemas/NewUserForm'
+import { NewUserFormSchema, SexualityPronouns } from '@schema/NewUserForm'
 import { RadioGroup } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
-import { isUsernameAvailableResponse } from '../api/user/[username]/available'
+import { isUsernameAvailableResponse } from '@api/user/[username]/available'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 

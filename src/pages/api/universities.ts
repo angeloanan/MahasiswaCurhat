@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { prisma } from '../../lib/prisma'
+import { prisma } from '@lib/prisma'
 
 async function Universities(_req: NextApiRequest, res: NextApiResponse) {
   try {

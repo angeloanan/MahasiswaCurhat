@@ -1,6 +1,6 @@
 import type { GetServerSideProps } from 'next'
 
-import { prisma } from '../lib/prisma'
+import { prisma } from '@lib/prisma'
 
 const BASE_URL = 'https://curhat.space'
 

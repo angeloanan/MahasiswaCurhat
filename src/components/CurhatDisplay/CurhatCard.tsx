@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import QuoteIcon from '../Icon/QuoteIcon'
+import QuoteIcon from '@components/Icon/QuoteIcon'
 
 interface CurhatCardProps {
   content: string

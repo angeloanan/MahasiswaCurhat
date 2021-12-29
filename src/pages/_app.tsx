@@ -1,20 +1,20 @@
 import * as React from 'react'
 
-import '../lib/why-did-you-render'
+import '@lib/why-did-you-render'
 import '@fontsource/inter/variable.css'
 import 'tailwindcss/tailwind.css'
 import './styles.css'
 import SEO from '../../next-seo.config'
 import Script from 'next/script'
-import { GoogleAnalytics } from '../lib/gtag'
+import { GoogleAnalytics } from '@lib/gtag'
 
 import type { AppProps } from 'next/app'
 import type { Session } from 'next-auth'
 import type { NextPage } from 'next'
 import { DefaultSeo } from 'next-seo'
 import { SessionProvider } from 'next-auth/react'
-import Navbar from '../components/Navbar'
-import CurhatComposer from '../components/Modal/CurhatComposer'
+import Navbar from '@components/Navbar'
+import CurhatComposer from '@components/Modal/CurhatComposer'
 
 export type NextPageWithDisableLayout = NextPage & {
   disableLayout?: boolean

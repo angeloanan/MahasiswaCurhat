@@ -1,13 +1,13 @@
 import * as React from 'react'
 import NextLink from 'next/link'
-import CurhatDisplay from '../components/CurhatDisplay'
+import CurhatDisplay from '@components/CurhatDisplay'
 
 import type { GetStaticProps, NextPage } from 'next'
 import type { Post, SexualityPronouns } from '@prisma/client'
 import type { Merge } from 'type-fest'
 
 import { NextSeo } from 'next-seo'
-import { prisma } from '../lib/prisma'
+import { prisma } from '@lib/prisma'
 import { useRouter } from 'next/router'
 import { differenceInYears } from 'date-fns'
 

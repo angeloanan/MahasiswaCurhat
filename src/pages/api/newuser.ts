@@ -2,8 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { ZodError } from 'zod'
 import { getSession } from 'next-auth/react'
 
-import { prisma } from '../../lib/prisma'
-import { NewUserFormSchema } from '../../schemas/NewUserForm'
+import { prisma } from '@lib/prisma'
+import { NewUserFormSchema } from '@schema/NewUserForm'
 
 async function NewUser(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req })

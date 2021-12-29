@@ -1,9 +1,9 @@
 import type { NextApiHandler } from 'next'
-import { prisma } from '../../../lib/prisma'
+import { prisma } from '@lib/prisma'
 import { getSession } from 'next-auth/react'
 import { ZodError } from 'zod'
 
-import { CreateCurhatCommentSchema } from '../../../schemas/CurhatComment'
+import { CreateCurhatCommentSchema } from '@schema/CurhatComment'
 
 export type PostCommentCurhatResponse =
   | { status: 200; commentId: string }

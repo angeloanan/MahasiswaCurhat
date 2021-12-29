@@ -7,7 +7,7 @@ import { formatDistance } from 'date-fns'
 import { HeartIcon as HeartIconOutline } from '@heroicons/react/outline'
 import { HeartIcon as HeartIconSolid, TrashIcon } from '@heroicons/react/solid'
 import { useSession } from 'next-auth/react'
-import LoadingIndicator from '../Icon/LoadingIndicator'
+import LoadingIndicator from '@components/Icon/LoadingIndicator'
 import useSWR, { useSWRConfig } from 'swr'
 
 interface CurhatCommentDisplayProps {

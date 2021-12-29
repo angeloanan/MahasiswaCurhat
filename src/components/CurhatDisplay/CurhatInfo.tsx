@@ -8,7 +8,7 @@ interface CurhatInfoProps {
 
 function CurhatInfo(props: CurhatInfoProps) {
   return (
-    <div className='flex flex-col gap-4 content-end'>
+    <aside className='flex flex-col gap-4 content-end'>
       <div className='text-right'>
         <div className='text-xl font-bold text-gray-900'>{props.totalKarma}</div>
         <div className='text-xl font-normal text-gray-500'>karma</div>
@@ -19,7 +19,7 @@ function CurhatInfo(props: CurhatInfoProps) {
         <ThumbDownIcon className='w-8 h-8 text-red-300' role='button' />
         <FlagIcon className='w-8 h-8 text-yellow-300' role='button' />
       </div>
-    </div>
+    </aside>
   )
 }
 

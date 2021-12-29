@@ -35,10 +35,10 @@ function CurhatDisplay({
 }: React.ComponentProps<'div'> & CurhatDisplayProps) {
   if (withInfo == true) {
     return (
-      <div className={'flex max-w-3xl gap-4 ' + className}>
+      <section className={'flex max-w-3xl gap-4 ' + className}>
         <CurhatInfo totalKarma={totalKarma} {...props} />
         <CurhatCard {...props} className='flex-1' />
-      </div>
+      </section>
     )
   } else {
     return <CurhatCard {...props} className={'max-w-prose ' + className} />

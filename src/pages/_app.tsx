@@ -27,6 +27,24 @@ type CustomAppProps = AppProps & {
   }
 }
 
+const Analytics = () => {
+  if (process.env.NODE_ENV !== 'production') {
+    return null
+  } else {
+    return (
+      <>
+        <GoogleAnalytics />
+        {/* Cloudflare Analytics */}
+        <Script
+          strategy='afterInteractive'
+          src='https://static.cloudflareinsights.com/beacon.min.js'
+          data-cf-beacon='{"token": "138785c1db39462081dcd5577c881c2c"}'
+        />
+      </>
+    )
+  }
+}
+
 function CustomApp({ Component, pageProps: { session, ...pageProps } }: CustomAppProps) {
   return (
     <SessionProvider session={session}>
@@ -35,13 +53,7 @@ function CustomApp({ Component, pageProps: { session, ...pageProps } }: CustomAp
       ) : (
         <>
           <DefaultSeo {...SEO} />
-          <GoogleAnalytics />
-          {/* Cloudflare Analytics */}
-          <Script
-            strategy='afterInteractive'
-            src='https://static.cloudflareinsights.com/beacon.min.js'
-            data-cf-beacon='{"token": "138785c1db39462081dcd5577c881c2c"}'
-          />
+          <Analytics />
 
           {/* Modal store */}
           <CurhatComposer />
